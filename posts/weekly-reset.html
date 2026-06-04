@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark" data-wallpaper="banner">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="把零散笔记放回合适的位置，是让下周更轻一点的小仪式。" />
+    <title>每周日晚上，给草稿做一次整理 - 一帆札记</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/anime.css" />
+    <script>
+      document.documentElement.dataset.theme = localStorage.getItem("blogTheme") || "dark";
+      document.documentElement.dataset.wallpaper = localStorage.getItem("wallpaperMode") || "banner";
+      document.documentElement.dataset.accent = localStorage.getItem("blogAccent") || "rose";
+    </script>
+    <script defer src="../assets/lucide.min.js"></script>
+  </head>
+  <body class="static-post-page">
+    <div class="wallpaper-stage" aria-hidden="true">
+      <img src="../assets/hero-anime.png" alt="" />
+      <div class="wallpaper-veil"></div>
+    </div>
+    <div class="sakura-field" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <header class="site-header static-header">
+      <a class="brand" href="../index.html">
+        <span class="brand-mark">B</span>
+        <span class="brand-copy">
+          <strong>一帆札记</strong>
+          <small>yifan notes</small>
+        </span>
+      </a>
+      <nav class="article-nav" aria-label="文章页导航">
+        <a href="../index.html#posts">文章</a>
+        <a href="../index.html#topics">专题</a>
+        <a href="../index.html#archive-section">归档</a>
+        <a href="../index.html#about">关于</a>
+      </nav>
+    </header>
+
+    <main class="article-shell">
+      <article class="article-page-card">
+        <a class="article-back" href="../index.html#posts">
+          <i data-lucide="arrow-left"></i>
+          返回首页
+        </a>
+        <p class="eyebrow">生活碎片 / 2026-03-16</p>
+        <h1>每周日晚上，给草稿做一次整理</h1>
+        <p class="article-summary">把零散笔记放回合适的位置，是让下周更轻一点的小仪式。</p>
+        <div class="post-meta-line article-meta">
+          <span>4 min</span>
+          <span>1,300 字</span>
+          <span>688 浏览</span>
+          <span>原创笔记</span>
+        </div>
+        <div class="post-tags article-tags"><span class="post-tag">写作</span><span class="post-tag">计划</span><span class="post-tag">生活</span></div>
+        <div class="article-body">
+          <p>草稿箱里最常见的不是半成品，而是一些还没找到方向的句子。它们需要被整理，而不是被责备。</p>
+          <p>我会把草稿分成三类：马上能写、需要查资料、只是一个想法。分类之后，焦虑会少很多。</p>
+          <p>写作的连续感，很多时候来自这种温和的复盘。</p>
+          
+          <blockquote>把还没完全想清楚的事写下来，常常就是想清楚的开始。</blockquote>
+        </div>
+      </article>
+
+      <nav class="article-neighbor" aria-label="文章上一篇下一篇">
+        <a href="css-layout-notes.html"><small>上一篇</small><strong>用 CSS Grid 处理博客首页布局</strong></a>
+        <span><small>下一篇</small><strong>已经是最后一篇</strong></span>
+      </nav>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => window.lucide?.createIcons());
+    </script>
+  </body>
+</html>

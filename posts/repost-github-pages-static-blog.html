@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark" data-wallpaper="banner">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="纯静态博客最适合先部署到 GitHub Pages：成本低、迁移方便，也能逐步接入域名、构建工具和自动发布。" />
+    <title>转载推荐：纯静态博客部署到 GitHub Pages 的思路 - 一帆札记</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/anime.css" />
+    <script>
+      document.documentElement.dataset.theme = localStorage.getItem("blogTheme") || "dark";
+      document.documentElement.dataset.wallpaper = localStorage.getItem("wallpaperMode") || "banner";
+      document.documentElement.dataset.accent = localStorage.getItem("blogAccent") || "rose";
+    </script>
+    <script defer src="../assets/lucide.min.js"></script>
+  </head>
+  <body class="static-post-page">
+    <div class="wallpaper-stage" aria-hidden="true">
+      <img src="../assets/hero-anime.png" alt="" />
+      <div class="wallpaper-veil"></div>
+    </div>
+    <div class="sakura-field" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <header class="site-header static-header">
+      <a class="brand" href="../index.html">
+        <span class="brand-mark">B</span>
+        <span class="brand-copy">
+          <strong>一帆札记</strong>
+          <small>yifan notes</small>
+        </span>
+      </a>
+      <nav class="article-nav" aria-label="文章页导航">
+        <a href="../index.html#posts">文章</a>
+        <a href="../index.html#topics">专题</a>
+        <a href="../index.html#archive-section">归档</a>
+        <a href="../index.html#about">关于</a>
+      </nav>
+    </header>
+
+    <main class="article-shell">
+      <article class="article-page-card">
+        <a class="article-back" href="../index.html#posts">
+          <i data-lucide="arrow-left"></i>
+          返回首页
+        </a>
+        <p class="eyebrow">转载推荐 / 2026-06-02</p>
+        <h1>转载推荐：纯静态博客部署到 GitHub Pages 的思路</h1>
+        <p class="article-summary">纯静态博客最适合先部署到 GitHub Pages：成本低、迁移方便，也能逐步接入域名、构建工具和自动发布。</p>
+        <div class="post-meta-line article-meta">
+          <span>4 min</span>
+          <span>1,200 字</span>
+          <span>0 浏览</span>
+          <span>转载推荐</span>
+        </div>
+        <div class="post-tags article-tags"><span class="post-tag">转载</span><span class="post-tag">静态页面</span><span class="post-tag">部署</span><span class="post-tag">GitHub</span></div>
+        <div class="article-body">
+          <p>转载说明：本文为 GitHub Pages 官方文档的部署思路整理，不复制原文步骤。实际操作时请以官方文档为准。</p>
+          <p>你的博客目前是纯静态页面，这很适合先放到 GitHub Pages。只要 HTML、CSS、JS 和图片路径正确，就能很快上线。</p>
+          <p>部署前要先检查相对路径、首页文件名、图片资源和大小写。很多静态站点本地能打开，线上出错，都是路径大小写或资源位置导致的。</p>
+          <p>后续如果文章变多，可以再接构建流程，把文章数据拆出去。但第一版先用静态文件上线，能最快验证视觉和内容方向。</p>
+          <p>实践清单：仓库保留 index.html；资源路径使用相对路径；提交到 GitHub；开启 Pages；绑定自定义域名时再配置 DNS。</p>
+          
+          <aside class="source-note static-source">
+            <span>转载来源</span>
+            <a href="https://docs.github.com/en/pages/quickstart" target="_blank" rel="noreferrer">
+              GitHub Docs - Quickstart for GitHub Pages
+              <i data-lucide="external-link"></i>
+            </a>
+          </aside>
+          <blockquote>把还没完全想清楚的事写下来，常常就是想清楚的开始。</blockquote>
+        </div>
+      </article>
+
+      <nav class="article-neighbor" aria-label="文章上一篇下一篇">
+        <a href="repost-mysql-identifier-names.html"><small>上一篇</small><strong>转载推荐：MySQL 表名和字段名应该先统一规则</strong></a>
+        <a href="spring-boot-reading-notes.html"><small>下一篇</small><strong>Spring Boot 项目里，那些最先该理顺的目录</strong></a>
+      </nav>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => window.lucide?.createIcons());
+    </script>
+  </body>
+</html>

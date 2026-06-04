@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark" data-wallpaper="banner">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="官方文档里关于包结构的建议很适合新项目：主应用类放在根包，业务代码按边界向下组织，自动扫描才更稳定。" />
+    <title>转载推荐：Spring Boot 项目结构为什么要从根包开始 - 一帆札记</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/anime.css" />
+    <script>
+      document.documentElement.dataset.theme = localStorage.getItem("blogTheme") || "dark";
+      document.documentElement.dataset.wallpaper = localStorage.getItem("wallpaperMode") || "banner";
+      document.documentElement.dataset.accent = localStorage.getItem("blogAccent") || "rose";
+    </script>
+    <script defer src="../assets/lucide.min.js"></script>
+  </head>
+  <body class="static-post-page">
+    <div class="wallpaper-stage" aria-hidden="true">
+      <img src="../assets/hero-anime.png" alt="" />
+      <div class="wallpaper-veil"></div>
+    </div>
+    <div class="sakura-field" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <header class="site-header static-header">
+      <a class="brand" href="../index.html">
+        <span class="brand-mark">B</span>
+        <span class="brand-copy">
+          <strong>一帆札记</strong>
+          <small>yifan notes</small>
+        </span>
+      </a>
+      <nav class="article-nav" aria-label="文章页导航">
+        <a href="../index.html#posts">文章</a>
+        <a href="../index.html#topics">专题</a>
+        <a href="../index.html#archive-section">归档</a>
+        <a href="../index.html#about">关于</a>
+      </nav>
+    </header>
+
+    <main class="article-shell">
+      <article class="article-page-card">
+        <a class="article-back" href="../index.html#posts">
+          <i data-lucide="arrow-left"></i>
+          返回首页
+        </a>
+        <p class="eyebrow">转载推荐 / 2026-06-04</p>
+        <h1>转载推荐：Spring Boot 项目结构为什么要从根包开始</h1>
+        <p class="article-summary">官方文档里关于包结构的建议很适合新项目：主应用类放在根包，业务代码按边界向下组织，自动扫描才更稳定。</p>
+        <div class="post-meta-line article-meta">
+          <span>5 min</span>
+          <span>1,500 字</span>
+          <span>0 浏览</span>
+          <span>转载推荐</span>
+        </div>
+        <div class="post-tags article-tags"><span class="post-tag">转载</span><span class="post-tag">Java</span><span class="post-tag">Spring Boot</span><span class="post-tag">项目结构</span></div>
+        <div class="article-body">
+          <p>转载说明：本文不是原文全文转载，而是基于 Spring Boot 官方文档整理的学习摘记。建议阅读原文获取完整上下文。</p>
+          <p>Spring Boot 项目最容易踩的坑之一，是一开始没有设计根包。主应用类如果放得太深，组件扫描就可能漏掉 controller、service 或配置类。</p>
+          <p>更稳的做法是把启动类放在业务包根部，例如 com.yifan.blog，然后在下面拆 controller、service、repository、config、common 等目录。</p>
+          <p>这条建议对小项目也有价值。目录结构不是为了显得复杂，而是让后续新增功能时，每个类都能被放到一个清楚的位置。</p>
+          <p>实践清单：避免使用默认包；启动类放在根包；业务目录按职责拆分；公共工具不要混进业务层；配置类集中管理。</p>
+          
+          <aside class="source-note static-source">
+            <span>转载来源</span>
+            <a href="https://docs.spring.io/spring-boot/reference/using/structuring-your-code.html" target="_blank" rel="noreferrer">
+              Spring Boot Reference Documentation
+              <i data-lucide="external-link"></i>
+            </a>
+          </aside>
+          <blockquote>把还没完全想清楚的事写下来，常常就是想清楚的开始。</blockquote>
+        </div>
+      </article>
+
+      <nav class="article-neighbor" aria-label="文章上一篇下一篇">
+        <span><small>上一篇</small><strong>已经是最新一篇</strong></span>
+        <a href="repost-owasp-auth-checklist.html"><small>下一篇</small><strong>转载推荐：登录功能上线前的安全检查清单</strong></a>
+      </nav>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => window.lucide?.createIcons());
+    </script>
+  </body>
+</html>

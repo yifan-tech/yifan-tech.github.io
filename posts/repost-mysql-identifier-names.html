@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark" data-wallpaper="banner">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="字段命名不是小事。先统一大小写、分隔符、保留字规避和时间字段规则，后续接口、日志和排查都会顺很多。" />
+    <title>转载推荐：MySQL 表名和字段名应该先统一规则 - 一帆札记</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/anime.css" />
+    <script>
+      document.documentElement.dataset.theme = localStorage.getItem("blogTheme") || "dark";
+      document.documentElement.dataset.wallpaper = localStorage.getItem("wallpaperMode") || "banner";
+      document.documentElement.dataset.accent = localStorage.getItem("blogAccent") || "rose";
+    </script>
+    <script defer src="../assets/lucide.min.js"></script>
+  </head>
+  <body class="static-post-page">
+    <div class="wallpaper-stage" aria-hidden="true">
+      <img src="../assets/hero-anime.png" alt="" />
+      <div class="wallpaper-veil"></div>
+    </div>
+    <div class="sakura-field" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <header class="site-header static-header">
+      <a class="brand" href="../index.html">
+        <span class="brand-mark">B</span>
+        <span class="brand-copy">
+          <strong>一帆札记</strong>
+          <small>yifan notes</small>
+        </span>
+      </a>
+      <nav class="article-nav" aria-label="文章页导航">
+        <a href="../index.html#posts">文章</a>
+        <a href="../index.html#topics">专题</a>
+        <a href="../index.html#archive-section">归档</a>
+        <a href="../index.html#about">关于</a>
+      </nav>
+    </header>
+
+    <main class="article-shell">
+      <article class="article-page-card">
+        <a class="article-back" href="../index.html#posts">
+          <i data-lucide="arrow-left"></i>
+          返回首页
+        </a>
+        <p class="eyebrow">转载推荐 / 2026-06-03</p>
+        <h1>转载推荐：MySQL 表名和字段名应该先统一规则</h1>
+        <p class="article-summary">字段命名不是小事。先统一大小写、分隔符、保留字规避和时间字段规则，后续接口、日志和排查都会顺很多。</p>
+        <div class="post-meta-line article-meta">
+          <span>4 min</span>
+          <span>1,300 字</span>
+          <span>0 浏览</span>
+          <span>转载推荐</span>
+        </div>
+        <div class="post-tags article-tags"><span class="post-tag">转载</span><span class="post-tag">MySQL</span><span class="post-tag">规范</span><span class="post-tag">后端</span></div>
+        <div class="article-body">
+          <p>转载说明：本文根据 MySQL 官方手册的标识符规则整理，不替代原文。涉及兼容性和特殊字符时，应以原文为准。</p>
+          <p>数据库命名最怕风格混用：一部分下划线，一部分驼峰，一部分缩写。项目越长，沟通成本越高。</p>
+          <p>实际项目里建议优先选择简单、稳定、可读的命名方式。表名和字段名尽量表达业务含义，避免为了省几个字符牺牲可读性。</p>
+          <p>还要注意保留字和大小写差异。不同系统、不同配置下，大小写规则可能带来迁移问题，所以一开始就保持统一更稳。</p>
+          <p>实践清单：统一 snake_case；避免保留字；时间字段固定 created_at、updated_at；状态字段明确枚举；外键字段用 xxx_id。</p>
+          
+          <aside class="source-note static-source">
+            <span>转载来源</span>
+            <a href="https://dev.mysql.com/doc/refman/8.4/en/identifiers.html" target="_blank" rel="noreferrer">
+              MySQL 8.4 Reference Manual - Schema Object Names
+              <i data-lucide="external-link"></i>
+            </a>
+          </aside>
+          <blockquote>把还没完全想清楚的事写下来，常常就是想清楚的开始。</blockquote>
+        </div>
+      </article>
+
+      <nav class="article-neighbor" aria-label="文章上一篇下一篇">
+        <a href="repost-mdn-css-grid-layout.html"><small>上一篇</small><strong>转载推荐：用 CSS Grid 稳住博客首页布局</strong></a>
+        <a href="repost-github-pages-static-blog.html"><small>下一篇</small><strong>转载推荐：纯静态博客部署到 GitHub Pages 的思路</strong></a>
+      </nav>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => window.lucide?.createIcons());
+    </script>
+  </body>
+</html>

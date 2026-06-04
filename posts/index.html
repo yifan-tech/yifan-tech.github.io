@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark" data-wallpaper="banner">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>文章列表 - 一帆札记</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/anime.css" />
+    <script>
+      document.documentElement.dataset.theme = localStorage.getItem("blogTheme") || "dark";
+      document.documentElement.dataset.wallpaper = localStorage.getItem("wallpaperMode") || "banner";
+      document.documentElement.dataset.accent = localStorage.getItem("blogAccent") || "rose";
+    </script>
+  </head>
+  <body class="static-post-page">
+    <div class="wallpaper-stage" aria-hidden="true">
+      <img src="../assets/hero-anime.png" alt="" />
+      <div class="wallpaper-veil"></div>
+    </div>
+    <header class="site-header static-header">
+      <a class="brand" href="../index.html"><span class="brand-mark">B</span><span class="brand-copy"><strong>一帆札记</strong><small>yifan notes</small></span></a>
+      <nav class="article-nav" aria-label="文章列表导航">
+        <a href="../index.html">首页</a>
+        <a href="../index.html#topics">专题</a>
+        <a href="../index.html#about">关于</a>
+      </nav>
+    </header>
+    <main class="article-shell">
+      <section class="section-head static-list-head">
+        <p class="eyebrow">All Posts</p>
+        <h1>全部文章</h1>
+        <p>这里是纯静态生成的文章列表，共 14 篇。</p>
+      </section>
+      <section class="post-list grid-mode static-post-grid">
+        <a class="post-card static-post-link" href="repost-spring-boot-structure.html">
+          <div class="post-main">
+            <div class="post-meta-line">
+              <span>2026-06-04</span>
+              <span>转载推荐</span>
+              <span>5 min</span>
+            </div>
+            <h3>转载推荐：Spring Boot 项目结构为什么要从根包开始</h3>
+            <p class="post-summary">官方文档里关于包结构的建议很适合新项目：主应用类放在根包，业务代码按边界向下组织，自动扫描才更稳定。</p>
+            <div class="post-tags"><span class="post-tag">转载</span><span class="post-tag">Java</span><span class="post-tag">Spring Boot</span><span class="post-tag">项目结构</span></div>
+          </div>
+        </a>
+        <a class="post-card static-post-link" href="repost-owasp-auth-checklist.html">
+          <div class="post-main">
+            <div class="post-meta-line">
+              <span>2026-06-04</span>
+              <span>转载推荐</span>
+              <span>6 min</span>
+            </div>
+            <h3>转载推荐：登录功能上线前的安全检查清单</h3>
+            <p class="post-summary">登录不是只有用户名和密码：错误提示、限流、密码策略、找回流程和会话处理，都应该在上线前过一遍。</p>
+            <div class="post-tags"><span class="post-tag">转载</span><span class="post-tag">安全</span><span class="post-tag">登录</span><span class="post-tag">后端</span></div>
+          </div>
+        </a>
+        <a class="post-card static-post-link" href="repost-mdn-css-grid-layout.html">
+          <div class="post-main">
+            <div class="post-meta-line">
+              <span>2026-06-03</span>
+              <span>转载推荐</span>
+              <span>5 min</span>
+            </div>
+            <h3>转载推荐：用 CSS Grid 稳住博客首页布局</h3>
+            <p class="post-summary">Grid 适合博客首页这种二维结构：主文章流、侧栏、专题卡片和统计区都能在同一个网格系统里保持稳定。</p>
+            <div class="post-tags"><span class="post-tag">转载</span><span class="post-tag">CSS</span><span class="post-tag">Grid</span><span class="post-tag">响应式</span></div>
+          </div>
+        </a>
+        <a class="post-card static-post-link" href="repost-mysql-identifier-names.html">
+          <div class="post-main">
+            <div class="post-meta-line">
+              <span>2026-06-03</span>
+              <span>转载推荐</span>
+              <span>4 min</span>
+            </div>
+            <h3>转载推荐：MySQL 表名和字段名应该先统一规则</h3>
+            <p class="post-summary">字段命名不是小事。先统一大小写、分隔符、保留字规避和时间字段规则，后续接口、日志和排查都会顺很多。</p>
+            <div class="post-tags"><span class="post-tag">转载</span><span class="post-tag">MySQL</span><span class="post-tag">规范</span><span class="post-tag">后端</span></div>
+          </div>
+        </a>
+        <a class="post-card static-post-link" href="repost-github-pages-static-blog.html">
+          <div class="post-main">
+            <div class="post-meta-line">
+              <span>2026-06-02</span>
+              <span>转载推荐</span>
+              <span>4 min</span>
+            </div>
+            <h3>转载推荐：纯静态博客部署到 GitHub Pages 的思路</h3>
+            <p class="post-summary">纯静态博客最适合先部署到 GitHub Pages：成本低、迁移方便，也能逐步接入域名、构建工具和自动发布。</p>
+            <div class="post-tags"><span class="post-tag">转载</span><span class="post-tag">静态页面</span><span class="post-tag">部署</span><span class="post-tag">GitHub</span></div>
+          </div>
+        </a>
+        <a class="post-card static-post-link" href="spring-boot-reading-notes.html">
+          <div class="post-main">
+            <div class="post-meta-line">
+              <span>2026-06-01</span>
+              <span>技术笔记</span>
+              <span>6 min</span>
+            </div>
+            <h3>Spring Boot 项目里，那些最先该理顺的目录</h3>
+            <p class="post-summary">从 controller、service、mapper 到 config 与 common，先把边界想明白，后面的功能才不会长成一团。</p>
+            <div class="post-tags"><span class="post-tag">Java</span><span class="post-tag">Spring Boot</span><span class="post-tag">项目结构</span></div>
+          </div>
+        </a>
+        <a class="post-card static-post-link" href="blog-redesign.html">
+          <div class="post-main">
+            <div class="post-meta-line">
+              <span>2026-05-25</span>
+              <span>建站日志</span>
+              <span>4 min</span>
+            </div>
+            <h3>给个人博客做一次轻量改版</h3>
+            <p class="post-summary">参考壁纸横幅、资料侧栏和文章卡片的结构，把首页改成更适合长期写作的样子。</p>
+            <div class="post-tags"><span class="post-tag">博客</span><span class="post-tag">前端</span><span class="post-tag">设计</span></div>
+          </div>
+        </a>
+        <a class="post-card static-post-link" href="database-tiny-habits.html">
+          <div class="post-main">
+            <div class="post-meta-line">
+              <span>2026-05-18</span>
+              <span>开发日常</span>
+              <span>5 min</span>
+            </div>
+            <h3>数据库字段命名的小习惯</h3>
+            <p class="post-summary">字段名、时间列、软删除、状态枚举，这些小地方统一之后，项目会少很多无意义的沟通。</p>
+            <div class="post-tags"><span class="post-tag">MySQL</span><span class="post-tag">规范</span><span class="post-tag">后端</span></div>
+          </div>
+        </a>
+        <a class="post-card static-post-link" href="night-reading.html">
+          <div class="post-main">
+            <div class="post-meta-line">
+              <span>2026-05-10</span>
+              <span>生活碎片</span>
+              <span>3 min</span>
+            </div>
+            <h3>夜里读书时，给自己留一盏小灯</h3>
+            <p class="post-summary">有些书不一定立刻改变什么，但会把一个普通晚上照得更安静一点。</p>
+            <div class="post-tags"><span class="post-tag">读书</span><span class="post-tag">生活</span><span class="post-tag">摘录</span></div>
+          </div>
+        </a>
+        <a class="post-card static-post-link" href="frontend-checklist.html">
+          <div class="post-main">
+            <div class="post-meta-line">
+              <span>2026-04-28</span>
+              <span>前端</span>
+              <span>7 min</span>
+            </div>
+            <h3>发布页面前，我会检查这几件事</h3>
+            <p class="post-summary">字号、间距、图片比例、移动端换行、按钮状态，很多页面质感都藏在这些细节里。</p>
+            <div class="post-tags"><span class="post-tag">CSS</span><span class="post-tag">可访问性</span><span class="post-tag">响应式</span></div>
+          </div>
+        </a>
+        <a class="post-card static-post-link" href="static-site-deploy.html">
+          <div class="post-main">
+            <div class="post-meta-line">
+              <span>2026-04-18</span>
+              <span>建站日志</span>
+              <span>5 min</span>
+            </div>
+            <h3>纯静态博客可以怎么部署</h3>
+            <p class="post-summary">没有后端也可以先上线：对象存储、GitHub Pages、Nginx 静态目录，都能成为起点。</p>
+            <div class="post-tags"><span class="post-tag">静态页面</span><span class="post-tag">部署</span><span class="post-tag">博客</span></div>
+          </div>
+        </a>
+        <a class="post-card static-post-link" href="java-web-login-flow.html">
+          <div class="post-main">
+            <div class="post-meta-line">
+              <span>2026-04-09</span>
+              <span>技术笔记</span>
+              <span>8 min</span>
+            </div>
+            <h3>登录流程不要只看表单提交</h3>
+            <p class="post-summary">登录不是一个接口，而是一串边界：校验、限流、会话、跳转、退出和异常提示。</p>
+            <div class="post-tags"><span class="post-tag">Java</span><span class="post-tag">安全</span><span class="post-tag">会话</span></div>
+          </div>
+        </a>
+        <a class="post-card static-post-link" href="css-layout-notes.html">
+          <div class="post-main">
+            <div class="post-meta-line">
+              <span>2026-03-29</span>
+              <span>前端</span>
+              <span>6 min</span>
+            </div>
+            <h3>用 CSS Grid 处理博客首页布局</h3>
+            <p class="post-summary">侧栏、文章流、专题区和归档区都在同一个响应式网格里，页面会更稳。</p>
+            <div class="post-tags"><span class="post-tag">CSS</span><span class="post-tag">Grid</span><span class="post-tag">响应式</span></div>
+          </div>
+        </a>
+        <a class="post-card static-post-link" href="weekly-reset.html">
+          <div class="post-main">
+            <div class="post-meta-line">
+              <span>2026-03-16</span>
+              <span>生活碎片</span>
+              <span>4 min</span>
+            </div>
+            <h3>每周日晚上，给草稿做一次整理</h3>
+            <p class="post-summary">把零散笔记放回合适的位置，是让下周更轻一点的小仪式。</p>
+            <div class="post-tags"><span class="post-tag">写作</span><span class="post-tag">计划</span><span class="post-tag">生活</span></div>
+          </div>
+        </a></section>
+    </main>
+  </body>
+</html>

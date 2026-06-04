@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark" data-wallpaper="banner">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="字段名、时间列、软删除、状态枚举，这些小地方统一之后，项目会少很多无意义的沟通。" />
+    <title>数据库字段命名的小习惯 - 一帆札记</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/anime.css" />
+    <script>
+      document.documentElement.dataset.theme = localStorage.getItem("blogTheme") || "dark";
+      document.documentElement.dataset.wallpaper = localStorage.getItem("wallpaperMode") || "banner";
+      document.documentElement.dataset.accent = localStorage.getItem("blogAccent") || "rose";
+    </script>
+    <script defer src="../assets/lucide.min.js"></script>
+  </head>
+  <body class="static-post-page">
+    <div class="wallpaper-stage" aria-hidden="true">
+      <img src="../assets/hero-anime.png" alt="" />
+      <div class="wallpaper-veil"></div>
+    </div>
+    <div class="sakura-field" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <header class="site-header static-header">
+      <a class="brand" href="../index.html">
+        <span class="brand-mark">B</span>
+        <span class="brand-copy">
+          <strong>一帆札记</strong>
+          <small>yifan notes</small>
+        </span>
+      </a>
+      <nav class="article-nav" aria-label="文章页导航">
+        <a href="../index.html#posts">文章</a>
+        <a href="../index.html#topics">专题</a>
+        <a href="../index.html#archive-section">归档</a>
+        <a href="../index.html#about">关于</a>
+      </nav>
+    </header>
+
+    <main class="article-shell">
+      <article class="article-page-card">
+        <a class="article-back" href="../index.html#posts">
+          <i data-lucide="arrow-left"></i>
+          返回首页
+        </a>
+        <p class="eyebrow">开发日常 / 2026-05-18</p>
+        <h1>数据库字段命名的小习惯</h1>
+        <p class="article-summary">字段名、时间列、软删除、状态枚举，这些小地方统一之后，项目会少很多无意义的沟通。</p>
+        <div class="post-meta-line article-meta">
+          <span>5 min</span>
+          <span>1,900 字</span>
+          <span>1,212 浏览</span>
+          <span>原创笔记</span>
+        </div>
+        <div class="post-tags article-tags"><span class="post-tag">MySQL</span><span class="post-tag">规范</span><span class="post-tag">后端</span></div>
+        <div class="article-body">
+          <p>字段命名最怕一半英文缩写、一半拼音、一半历史遗留。数据库不像页面，重构成本很高，所以一开始就要克制。</p>
+          <p>我通常会固定 created_at、updated_at、deleted_at，再把状态字段收束为明确枚举。这样 API、后台表格和排查日志会更顺。</p>
+          <p>规范的价值不是限制写法，而是把注意力还给真正的业务问题。</p>
+          
+          <blockquote>把还没完全想清楚的事写下来，常常就是想清楚的开始。</blockquote>
+        </div>
+      </article>
+
+      <nav class="article-neighbor" aria-label="文章上一篇下一篇">
+        <a href="blog-redesign.html"><small>上一篇</small><strong>给个人博客做一次轻量改版</strong></a>
+        <a href="night-reading.html"><small>下一篇</small><strong>夜里读书时，给自己留一盏小灯</strong></a>
+      </nav>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => window.lucide?.createIcons());
+    </script>
+  </body>
+</html>

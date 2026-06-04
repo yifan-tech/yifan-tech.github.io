@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark" data-wallpaper="banner">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="登录不是一个接口，而是一串边界：校验、限流、会话、跳转、退出和异常提示。" />
+    <title>登录流程不要只看表单提交 - 一帆札记</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/anime.css" />
+    <script>
+      document.documentElement.dataset.theme = localStorage.getItem("blogTheme") || "dark";
+      document.documentElement.dataset.wallpaper = localStorage.getItem("wallpaperMode") || "banner";
+      document.documentElement.dataset.accent = localStorage.getItem("blogAccent") || "rose";
+    </script>
+    <script defer src="../assets/lucide.min.js"></script>
+  </head>
+  <body class="static-post-page">
+    <div class="wallpaper-stage" aria-hidden="true">
+      <img src="../assets/hero-anime.png" alt="" />
+      <div class="wallpaper-veil"></div>
+    </div>
+    <div class="sakura-field" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <header class="site-header static-header">
+      <a class="brand" href="../index.html">
+        <span class="brand-mark">B</span>
+        <span class="brand-copy">
+          <strong>一帆札记</strong>
+          <small>yifan notes</small>
+        </span>
+      </a>
+      <nav class="article-nav" aria-label="文章页导航">
+        <a href="../index.html#posts">文章</a>
+        <a href="../index.html#topics">专题</a>
+        <a href="../index.html#archive-section">归档</a>
+        <a href="../index.html#about">关于</a>
+      </nav>
+    </header>
+
+    <main class="article-shell">
+      <article class="article-page-card">
+        <a class="article-back" href="../index.html#posts">
+          <i data-lucide="arrow-left"></i>
+          返回首页
+        </a>
+        <p class="eyebrow">技术笔记 / 2026-04-09</p>
+        <h1>登录流程不要只看表单提交</h1>
+        <p class="article-summary">登录不是一个接口，而是一串边界：校验、限流、会话、跳转、退出和异常提示。</p>
+        <div class="post-meta-line article-meta">
+          <span>8 min</span>
+          <span>3,100 字</span>
+          <span>1,544 浏览</span>
+          <span>原创笔记</span>
+        </div>
+        <div class="post-tags article-tags"><span class="post-tag">Java</span><span class="post-tag">安全</span><span class="post-tag">会话</span></div>
+        <div class="article-body">
+          <p>做登录功能时，表单只是入口。真正容易出问题的是错误提示、重复提交、会话续期和退出后的页面缓存。</p>
+          <p>我会把登录流程拆成几个状态：未登录、验证中、已登录、已过期、已退出。状态清楚之后，前后端都更容易协作。</p>
+          <p>安全不是把页面做复杂，而是让每个入口都有合理的默认防线。</p>
+          
+          <blockquote>把还没完全想清楚的事写下来，常常就是想清楚的开始。</blockquote>
+        </div>
+      </article>
+
+      <nav class="article-neighbor" aria-label="文章上一篇下一篇">
+        <a href="static-site-deploy.html"><small>上一篇</small><strong>纯静态博客可以怎么部署</strong></a>
+        <a href="css-layout-notes.html"><small>下一篇</small><strong>用 CSS Grid 处理博客首页布局</strong></a>
+      </nav>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => window.lucide?.createIcons());
+    </script>
+  </body>
+</html>

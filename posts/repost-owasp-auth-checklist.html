@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark" data-wallpaper="banner">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="登录不是只有用户名和密码：错误提示、限流、密码策略、找回流程和会话处理，都应该在上线前过一遍。" />
+    <title>转载推荐：登录功能上线前的安全检查清单 - 一帆札记</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/anime.css" />
+    <script>
+      document.documentElement.dataset.theme = localStorage.getItem("blogTheme") || "dark";
+      document.documentElement.dataset.wallpaper = localStorage.getItem("wallpaperMode") || "banner";
+      document.documentElement.dataset.accent = localStorage.getItem("blogAccent") || "rose";
+    </script>
+    <script defer src="../assets/lucide.min.js"></script>
+  </head>
+  <body class="static-post-page">
+    <div class="wallpaper-stage" aria-hidden="true">
+      <img src="../assets/hero-anime.png" alt="" />
+      <div class="wallpaper-veil"></div>
+    </div>
+    <div class="sakura-field" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <header class="site-header static-header">
+      <a class="brand" href="../index.html">
+        <span class="brand-mark">B</span>
+        <span class="brand-copy">
+          <strong>一帆札记</strong>
+          <small>yifan notes</small>
+        </span>
+      </a>
+      <nav class="article-nav" aria-label="文章页导航">
+        <a href="../index.html#posts">文章</a>
+        <a href="../index.html#topics">专题</a>
+        <a href="../index.html#archive-section">归档</a>
+        <a href="../index.html#about">关于</a>
+      </nav>
+    </header>
+
+    <main class="article-shell">
+      <article class="article-page-card">
+        <a class="article-back" href="../index.html#posts">
+          <i data-lucide="arrow-left"></i>
+          返回首页
+        </a>
+        <p class="eyebrow">转载推荐 / 2026-06-04</p>
+        <h1>转载推荐：登录功能上线前的安全检查清单</h1>
+        <p class="article-summary">登录不是只有用户名和密码：错误提示、限流、密码策略、找回流程和会话处理，都应该在上线前过一遍。</p>
+        <div class="post-meta-line article-meta">
+          <span>6 min</span>
+          <span>1,700 字</span>
+          <span>0 浏览</span>
+          <span>转载推荐</span>
+        </div>
+        <div class="post-tags article-tags"><span class="post-tag">转载</span><span class="post-tag">安全</span><span class="post-tag">登录</span><span class="post-tag">后端</span></div>
+        <div class="article-body">
+          <p>转载说明：本文为 OWASP Authentication Cheat Sheet 的学习整理，不复制原文内容，只保留适合项目落地的要点。</p>
+          <p>登录接口的安全重点不是把表单做复杂，而是让攻击者不能轻易枚举账号、暴力尝试密码，或者通过找回密码流程绕过认证。</p>
+          <p>错误提示要克制，不要明确告诉对方是账号不存在还是密码错误。限流也应该放在登录、验证码、找回密码等高风险入口。</p>
+          <p>密码策略可以从长度、泄露密码拦截、重试限制和安全存储几个方向考虑。真正落地时，还要结合后端框架和部署环境。</p>
+          <p>实践清单：统一错误提示；登录失败限流；密码哈希存储；重置链接短时有效；退出登录后清理会话；敏感操作二次确认。</p>
+          
+          <aside class="source-note static-source">
+            <span>转载来源</span>
+            <a href="https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html" target="_blank" rel="noreferrer">
+              OWASP Cheat Sheet Series - Authentication
+              <i data-lucide="external-link"></i>
+            </a>
+          </aside>
+          <blockquote>把还没完全想清楚的事写下来，常常就是想清楚的开始。</blockquote>
+        </div>
+      </article>
+
+      <nav class="article-neighbor" aria-label="文章上一篇下一篇">
+        <a href="repost-spring-boot-structure.html"><small>上一篇</small><strong>转载推荐：Spring Boot 项目结构为什么要从根包开始</strong></a>
+        <a href="repost-mdn-css-grid-layout.html"><small>下一篇</small><strong>转载推荐：用 CSS Grid 稳住博客首页布局</strong></a>
+      </nav>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => window.lucide?.createIcons());
+    </script>
+  </body>
+</html>

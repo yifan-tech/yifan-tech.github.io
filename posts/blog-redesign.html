@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark" data-wallpaper="banner">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="参考壁纸横幅、资料侧栏和文章卡片的结构，把首页改成更适合长期写作的样子。" />
+    <title>给个人博客做一次轻量改版 - 一帆札记</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/anime.css" />
+    <script>
+      document.documentElement.dataset.theme = localStorage.getItem("blogTheme") || "dark";
+      document.documentElement.dataset.wallpaper = localStorage.getItem("wallpaperMode") || "banner";
+      document.documentElement.dataset.accent = localStorage.getItem("blogAccent") || "rose";
+    </script>
+    <script defer src="../assets/lucide.min.js"></script>
+  </head>
+  <body class="static-post-page">
+    <div class="wallpaper-stage" aria-hidden="true">
+      <img src="../assets/hero-anime.png" alt="" />
+      <div class="wallpaper-veil"></div>
+    </div>
+    <div class="sakura-field" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <header class="site-header static-header">
+      <a class="brand" href="../index.html">
+        <span class="brand-mark">B</span>
+        <span class="brand-copy">
+          <strong>一帆札记</strong>
+          <small>yifan notes</small>
+        </span>
+      </a>
+      <nav class="article-nav" aria-label="文章页导航">
+        <a href="../index.html#posts">文章</a>
+        <a href="../index.html#topics">专题</a>
+        <a href="../index.html#archive-section">归档</a>
+        <a href="../index.html#about">关于</a>
+      </nav>
+    </header>
+
+    <main class="article-shell">
+      <article class="article-page-card">
+        <a class="article-back" href="../index.html#posts">
+          <i data-lucide="arrow-left"></i>
+          返回首页
+        </a>
+        <p class="eyebrow">建站日志 / 2026-05-25</p>
+        <h1>给个人博客做一次轻量改版</h1>
+        <p class="article-summary">参考壁纸横幅、资料侧栏和文章卡片的结构，把首页改成更适合长期写作的样子。</p>
+        <div class="post-meta-line article-meta">
+          <span>4 min</span>
+          <span>1,600 字</span>
+          <span>980 浏览</span>
+          <span>原创笔记</span>
+        </div>
+        <div class="post-tags article-tags"><span class="post-tag">博客</span><span class="post-tag">前端</span><span class="post-tag">设计</span></div>
+        <div class="article-body">
+          <p>我喜欢首页有一点空间感，但不希望内容被装饰吞掉。横幅负责气氛，卡片负责信息，二者要保持距离。</p>
+          <p>这次把资料、公告、标签、音乐状态放到侧栏，主区域留给文章。读者一进来能知道这里是谁的空间，也能马上进入文章。</p>
+          <p>后续会把文章数据抽离成 Markdown，再让构建脚本生成归档、RSS 和站点地图。</p>
+          
+          <blockquote>把还没完全想清楚的事写下来，常常就是想清楚的开始。</blockquote>
+        </div>
+      </article>
+
+      <nav class="article-neighbor" aria-label="文章上一篇下一篇">
+        <a href="spring-boot-reading-notes.html"><small>上一篇</small><strong>Spring Boot 项目里，那些最先该理顺的目录</strong></a>
+        <a href="database-tiny-habits.html"><small>下一篇</small><strong>数据库字段命名的小习惯</strong></a>
+      </nav>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => window.lucide?.createIcons());
+    </script>
+  </body>
+</html>

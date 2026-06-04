@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark" data-wallpaper="banner">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="侧栏、文章流、专题区和归档区都在同一个响应式网格里，页面会更稳。" />
+    <title>用 CSS Grid 处理博客首页布局 - 一帆札记</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/anime.css" />
+    <script>
+      document.documentElement.dataset.theme = localStorage.getItem("blogTheme") || "dark";
+      document.documentElement.dataset.wallpaper = localStorage.getItem("wallpaperMode") || "banner";
+      document.documentElement.dataset.accent = localStorage.getItem("blogAccent") || "rose";
+    </script>
+    <script defer src="../assets/lucide.min.js"></script>
+  </head>
+  <body class="static-post-page">
+    <div class="wallpaper-stage" aria-hidden="true">
+      <img src="../assets/hero-anime.png" alt="" />
+      <div class="wallpaper-veil"></div>
+    </div>
+    <div class="sakura-field" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <header class="site-header static-header">
+      <a class="brand" href="../index.html">
+        <span class="brand-mark">B</span>
+        <span class="brand-copy">
+          <strong>一帆札记</strong>
+          <small>yifan notes</small>
+        </span>
+      </a>
+      <nav class="article-nav" aria-label="文章页导航">
+        <a href="../index.html#posts">文章</a>
+        <a href="../index.html#topics">专题</a>
+        <a href="../index.html#archive-section">归档</a>
+        <a href="../index.html#about">关于</a>
+      </nav>
+    </header>
+
+    <main class="article-shell">
+      <article class="article-page-card">
+        <a class="article-back" href="../index.html#posts">
+          <i data-lucide="arrow-left"></i>
+          返回首页
+        </a>
+        <p class="eyebrow">前端 / 2026-03-29</p>
+        <h1>用 CSS Grid 处理博客首页布局</h1>
+        <p class="article-summary">侧栏、文章流、专题区和归档区都在同一个响应式网格里，页面会更稳。</p>
+        <div class="post-meta-line article-meta">
+          <span>6 min</span>
+          <span>2,100 字</span>
+          <span>1,032 浏览</span>
+          <span>原创笔记</span>
+        </div>
+        <div class="post-tags article-tags"><span class="post-tag">CSS</span><span class="post-tag">Grid</span><span class="post-tag">响应式</span></div>
+        <div class="article-body">
+          <p>Grid 的好处是能直接描述二维布局。博客首页这种侧栏加主内容的结构，很适合用 grid-template-columns 解决。</p>
+          <p>移动端不是简单缩小，而是重新决定信息顺序。个人资料可以先出现，文章列表紧跟其后，辅助模块再往下排。</p>
+          <p>布局写稳之后，动效和内容变化才不会把页面推得乱七八糟。</p>
+          
+          <blockquote>把还没完全想清楚的事写下来，常常就是想清楚的开始。</blockquote>
+        </div>
+      </article>
+
+      <nav class="article-neighbor" aria-label="文章上一篇下一篇">
+        <a href="java-web-login-flow.html"><small>上一篇</small><strong>登录流程不要只看表单提交</strong></a>
+        <a href="weekly-reset.html"><small>下一篇</small><strong>每周日晚上，给草稿做一次整理</strong></a>
+      </nav>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => window.lucide?.createIcons());
+    </script>
+  </body>
+</html>

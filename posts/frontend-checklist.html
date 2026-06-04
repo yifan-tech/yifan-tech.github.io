@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark" data-wallpaper="banner">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="字号、间距、图片比例、移动端换行、按钮状态，很多页面质感都藏在这些细节里。" />
+    <title>发布页面前，我会检查这几件事 - 一帆札记</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/anime.css" />
+    <script>
+      document.documentElement.dataset.theme = localStorage.getItem("blogTheme") || "dark";
+      document.documentElement.dataset.wallpaper = localStorage.getItem("wallpaperMode") || "banner";
+      document.documentElement.dataset.accent = localStorage.getItem("blogAccent") || "rose";
+    </script>
+    <script defer src="../assets/lucide.min.js"></script>
+  </head>
+  <body class="static-post-page">
+    <div class="wallpaper-stage" aria-hidden="true">
+      <img src="../assets/hero-anime.png" alt="" />
+      <div class="wallpaper-veil"></div>
+    </div>
+    <div class="sakura-field" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <header class="site-header static-header">
+      <a class="brand" href="../index.html">
+        <span class="brand-mark">B</span>
+        <span class="brand-copy">
+          <strong>一帆札记</strong>
+          <small>yifan notes</small>
+        </span>
+      </a>
+      <nav class="article-nav" aria-label="文章页导航">
+        <a href="../index.html#posts">文章</a>
+        <a href="../index.html#topics">专题</a>
+        <a href="../index.html#archive-section">归档</a>
+        <a href="../index.html#about">关于</a>
+      </nav>
+    </header>
+
+    <main class="article-shell">
+      <article class="article-page-card">
+        <a class="article-back" href="../index.html#posts">
+          <i data-lucide="arrow-left"></i>
+          返回首页
+        </a>
+        <p class="eyebrow">前端 / 2026-04-28</p>
+        <h1>发布页面前，我会检查这几件事</h1>
+        <p class="article-summary">字号、间距、图片比例、移动端换行、按钮状态，很多页面质感都藏在这些细节里。</p>
+        <div class="post-meta-line article-meta">
+          <span>7 min</span>
+          <span>2,600 字</span>
+          <span>1,320 浏览</span>
+          <span>原创笔记</span>
+        </div>
+        <div class="post-tags article-tags"><span class="post-tag">CSS</span><span class="post-tag">可访问性</span><span class="post-tag">响应式</span></div>
+        <div class="article-body">
+          <p>页面写完以后，我会先缩到手机宽度，看所有长标题和按钮文字有没有挤出容器。然后再看桌面宽屏，确认内容没有散得太开。</p>
+          <p>图片一定要有稳定比例，列表卡片也要能承受标题变长。布局的稳定感，往往比某个单独的视觉效果更重要。</p>
+          <p>最后才是动效。动效应该让操作更清楚，而不是把读者的注意力从内容上抢走。</p>
+          
+          <blockquote>把还没完全想清楚的事写下来，常常就是想清楚的开始。</blockquote>
+        </div>
+      </article>
+
+      <nav class="article-neighbor" aria-label="文章上一篇下一篇">
+        <a href="night-reading.html"><small>上一篇</small><strong>夜里读书时，给自己留一盏小灯</strong></a>
+        <a href="static-site-deploy.html"><small>下一篇</small><strong>纯静态博客可以怎么部署</strong></a>
+      </nav>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => window.lucide?.createIcons());
+    </script>
+  </body>
+</html>

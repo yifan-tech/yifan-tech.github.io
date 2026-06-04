@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark" data-wallpaper="banner">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="从 controller、service、mapper 到 config 与 common，先把边界想明白，后面的功能才不会长成一团。" />
+    <title>Spring Boot 项目里，那些最先该理顺的目录 - 一帆札记</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/anime.css" />
+    <script>
+      document.documentElement.dataset.theme = localStorage.getItem("blogTheme") || "dark";
+      document.documentElement.dataset.wallpaper = localStorage.getItem("wallpaperMode") || "banner";
+      document.documentElement.dataset.accent = localStorage.getItem("blogAccent") || "rose";
+    </script>
+    <script defer src="../assets/lucide.min.js"></script>
+  </head>
+  <body class="static-post-page">
+    <div class="wallpaper-stage" aria-hidden="true">
+      <img src="../assets/hero-anime.png" alt="" />
+      <div class="wallpaper-veil"></div>
+    </div>
+    <div class="sakura-field" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <header class="site-header static-header">
+      <a class="brand" href="../index.html">
+        <span class="brand-mark">B</span>
+        <span class="brand-copy">
+          <strong>一帆札记</strong>
+          <small>yifan notes</small>
+        </span>
+      </a>
+      <nav class="article-nav" aria-label="文章页导航">
+        <a href="../index.html#posts">文章</a>
+        <a href="../index.html#topics">专题</a>
+        <a href="../index.html#archive-section">归档</a>
+        <a href="../index.html#about">关于</a>
+      </nav>
+    </header>
+
+    <main class="article-shell">
+      <article class="article-page-card">
+        <a class="article-back" href="../index.html#posts">
+          <i data-lucide="arrow-left"></i>
+          返回首页
+        </a>
+        <p class="eyebrow">技术笔记 / 2026-06-01</p>
+        <h1>Spring Boot 项目里，那些最先该理顺的目录</h1>
+        <p class="article-summary">从 controller、service、mapper 到 config 与 common，先把边界想明白，后面的功能才不会长成一团。</p>
+        <div class="post-meta-line article-meta">
+          <span>6 min</span>
+          <span>2,300 字</span>
+          <span>1,420 浏览</span>
+          <span>原创笔记</span>
+        </div>
+        <div class="post-tags article-tags"><span class="post-tag">Java</span><span class="post-tag">Spring Boot</span><span class="post-tag">项目结构</span></div>
+        <div class="article-body">
+          <p>刚开始写 Web 项目时，最容易把所有东西都塞进一个包里。短期看省事，长期看每一次改动都像在翻抽屉。</p>
+          <p>我现在更习惯先画出请求流向：入口负责接参，业务层负责规则，数据层只做数据访问。目录不是仪式感，而是让代码的责任可以被快速看见。</p>
+          <p>真正重要的不是名字多标准，而是团队里每个人都能猜到新代码应该放在哪里。</p>
+          
+          <blockquote>把还没完全想清楚的事写下来，常常就是想清楚的开始。</blockquote>
+        </div>
+      </article>
+
+      <nav class="article-neighbor" aria-label="文章上一篇下一篇">
+        <a href="repost-github-pages-static-blog.html"><small>上一篇</small><strong>转载推荐：纯静态博客部署到 GitHub Pages 的思路</strong></a>
+        <a href="blog-redesign.html"><small>下一篇</small><strong>给个人博客做一次轻量改版</strong></a>
+      </nav>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => window.lucide?.createIcons());
+    </script>
+  </body>
+</html>

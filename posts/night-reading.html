@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark" data-wallpaper="banner">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="有些书不一定立刻改变什么，但会把一个普通晚上照得更安静一点。" />
+    <title>夜里读书时，给自己留一盏小灯 - 一帆札记</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/anime.css" />
+    <script>
+      document.documentElement.dataset.theme = localStorage.getItem("blogTheme") || "dark";
+      document.documentElement.dataset.wallpaper = localStorage.getItem("wallpaperMode") || "banner";
+      document.documentElement.dataset.accent = localStorage.getItem("blogAccent") || "rose";
+    </script>
+    <script defer src="../assets/lucide.min.js"></script>
+  </head>
+  <body class="static-post-page">
+    <div class="wallpaper-stage" aria-hidden="true">
+      <img src="../assets/hero-anime.png" alt="" />
+      <div class="wallpaper-veil"></div>
+    </div>
+    <div class="sakura-field" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <header class="site-header static-header">
+      <a class="brand" href="../index.html">
+        <span class="brand-mark">B</span>
+        <span class="brand-copy">
+          <strong>一帆札记</strong>
+          <small>yifan notes</small>
+        </span>
+      </a>
+      <nav class="article-nav" aria-label="文章页导航">
+        <a href="../index.html#posts">文章</a>
+        <a href="../index.html#topics">专题</a>
+        <a href="../index.html#archive-section">归档</a>
+        <a href="../index.html#about">关于</a>
+      </nav>
+    </header>
+
+    <main class="article-shell">
+      <article class="article-page-card">
+        <a class="article-back" href="../index.html#posts">
+          <i data-lucide="arrow-left"></i>
+          返回首页
+        </a>
+        <p class="eyebrow">生活碎片 / 2026-05-10</p>
+        <h1>夜里读书时，给自己留一盏小灯</h1>
+        <p class="article-summary">有些书不一定立刻改变什么，但会把一个普通晚上照得更安静一点。</p>
+        <div class="post-meta-line article-meta">
+          <span>3 min</span>
+          <span>1,200 字</span>
+          <span>756 浏览</span>
+          <span>原创笔记</span>
+        </div>
+        <div class="post-tags article-tags"><span class="post-tag">读书</span><span class="post-tag">生活</span><span class="post-tag">摘录</span></div>
+        <div class="article-body">
+          <p>我越来越喜欢慢读。不是为了记住每个观点，而是为了让自己在快节奏之外，有一个可以慢慢呼吸的地方。</p>
+          <p>读到喜欢的句子时，我会先抄下来，再写一句自己的解释。很多时候，那一句解释才是这一天真正留下来的东西。</p>
+          <p>写博客也是类似的事：不是展示已经完成的答案，而是留下正在变清楚的过程。</p>
+          
+          <blockquote>把还没完全想清楚的事写下来，常常就是想清楚的开始。</blockquote>
+        </div>
+      </article>
+
+      <nav class="article-neighbor" aria-label="文章上一篇下一篇">
+        <a href="database-tiny-habits.html"><small>上一篇</small><strong>数据库字段命名的小习惯</strong></a>
+        <a href="frontend-checklist.html"><small>下一篇</small><strong>发布页面前，我会检查这几件事</strong></a>
+      </nav>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => window.lucide?.createIcons());
+    </script>
+  </body>
+</html>

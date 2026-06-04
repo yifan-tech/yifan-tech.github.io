@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark" data-wallpaper="banner">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Grid 适合博客首页这种二维结构：主文章流、侧栏、专题卡片和统计区都能在同一个网格系统里保持稳定。" />
+    <title>转载推荐：用 CSS Grid 稳住博客首页布局 - 一帆札记</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/anime.css" />
+    <script>
+      document.documentElement.dataset.theme = localStorage.getItem("blogTheme") || "dark";
+      document.documentElement.dataset.wallpaper = localStorage.getItem("wallpaperMode") || "banner";
+      document.documentElement.dataset.accent = localStorage.getItem("blogAccent") || "rose";
+    </script>
+    <script defer src="../assets/lucide.min.js"></script>
+  </head>
+  <body class="static-post-page">
+    <div class="wallpaper-stage" aria-hidden="true">
+      <img src="../assets/hero-anime.png" alt="" />
+      <div class="wallpaper-veil"></div>
+    </div>
+    <div class="sakura-field" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <header class="site-header static-header">
+      <a class="brand" href="../index.html">
+        <span class="brand-mark">B</span>
+        <span class="brand-copy">
+          <strong>一帆札记</strong>
+          <small>yifan notes</small>
+        </span>
+      </a>
+      <nav class="article-nav" aria-label="文章页导航">
+        <a href="../index.html#posts">文章</a>
+        <a href="../index.html#topics">专题</a>
+        <a href="../index.html#archive-section">归档</a>
+        <a href="../index.html#about">关于</a>
+      </nav>
+    </header>
+
+    <main class="article-shell">
+      <article class="article-page-card">
+        <a class="article-back" href="../index.html#posts">
+          <i data-lucide="arrow-left"></i>
+          返回首页
+        </a>
+        <p class="eyebrow">转载推荐 / 2026-06-03</p>
+        <h1>转载推荐：用 CSS Grid 稳住博客首页布局</h1>
+        <p class="article-summary">Grid 适合博客首页这种二维结构：主文章流、侧栏、专题卡片和统计区都能在同一个网格系统里保持稳定。</p>
+        <div class="post-meta-line article-meta">
+          <span>5 min</span>
+          <span>1,400 字</span>
+          <span>0 浏览</span>
+          <span>转载推荐</span>
+        </div>
+        <div class="post-tags article-tags"><span class="post-tag">转载</span><span class="post-tag">CSS</span><span class="post-tag">Grid</span><span class="post-tag">响应式</span></div>
+        <div class="article-body">
+          <p>转载说明：本文根据 MDN CSS Grid 文档整理为博客布局笔记，完整语法和示例请看原文。</p>
+          <p>博客首页不是简单的一列文章。它通常还有侧栏、专题、归档、标签、搜索和个人资料，这些模块更适合用二维网格来组织。</p>
+          <p>Grid 的价值在于能明确描述列宽、间距和响应式断点。相比不断给元素写浮动或手动宽度，网格更容易维护。</p>
+          <p>移动端布局不要只是缩小桌面端。更好的方式是重新排序信息：先给读者看到站点身份和文章入口，再展示辅助模块。</p>
+          <p>实践清单：给主要区域定义 grid-template-columns；卡片使用稳定间距；移动端改成单列；固定格式模块加 minmax 防止挤压。</p>
+          
+          <aside class="source-note static-source">
+            <span>转载来源</span>
+            <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout" target="_blank" rel="noreferrer">
+              MDN Web Docs - CSS Grid Layout
+              <i data-lucide="external-link"></i>
+            </a>
+          </aside>
+          <blockquote>把还没完全想清楚的事写下来，常常就是想清楚的开始。</blockquote>
+        </div>
+      </article>
+
+      <nav class="article-neighbor" aria-label="文章上一篇下一篇">
+        <a href="repost-owasp-auth-checklist.html"><small>上一篇</small><strong>转载推荐：登录功能上线前的安全检查清单</strong></a>
+        <a href="repost-mysql-identifier-names.html"><small>下一篇</small><strong>转载推荐：MySQL 表名和字段名应该先统一规则</strong></a>
+      </nav>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => window.lucide?.createIcons());
+    </script>
+  </body>
+</html>

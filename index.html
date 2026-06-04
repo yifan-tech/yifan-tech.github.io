@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-wallpaper="banner">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="一个纯静态个人博客页面，包含完整导航、文章搜索、专题、归档、收藏、留言、主题切换和 GSAP 动画。"
+    />
+    <title>一帆札记 - 二次元个人博客</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="assets/hero-anime.png" as="image" />
+    <link rel="stylesheet" href="assets/styles.css" />
+    <link rel="stylesheet" href="assets/anime.css" />
+    <script defer src="assets/lucide.min.js"></script>
+    <script defer src="assets/gsap.min.js"></script>
+    <script defer src="assets/ScrollTrigger.min.js"></script>
+    <script defer src="assets/app.js"></script>
+  </head>
+  <body>
+    <div class="reading-progress" aria-hidden="true"></div>
+
+    <div class="wallpaper-stage" aria-hidden="true">
+      <img src="assets/hero-anime.png" alt="" />
+      <div class="wallpaper-veil"></div>
+    </div>
+    <div class="sakura-field" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <header class="site-header">
+      <a class="brand" href="#top" data-nav-link aria-label="回到首页">
+        <span class="brand-mark">B</span>
+        <span class="brand-copy">
+          <strong>一帆札记</strong>
+          <small>yifan notes</small>
+        </span>
+      </a>
+
+      <nav class="main-nav" id="mainNav" aria-label="主导航">
+        <span class="nav-indicator" id="navIndicator" aria-hidden="true"></span>
+        <div class="nav-item">
+          <a class="nav-anchor" href="#posts" data-nav-link data-section="posts">
+            <i data-lucide="newspaper"></i>
+            <span>文章</span>
+          </a>
+          <button class="nav-expander" type="button" data-nav-menu="articles" aria-label="展开文章导航" aria-expanded="false" aria-controls="navMega">
+            <i data-lucide="chevron-down"></i>
+          </button>
+        </div>
+        <div class="nav-item">
+          <a class="nav-anchor" href="#topics" data-nav-link data-section="topics">
+            <i data-lucide="folder-kanban"></i>
+            <span>专题</span>
+          </a>
+          <button class="nav-expander" type="button" data-nav-menu="topics" aria-label="展开专题导航" aria-expanded="false" aria-controls="navMega">
+            <i data-lucide="chevron-down"></i>
+          </button>
+        </div>
+        <div class="nav-item">
+          <a class="nav-anchor" href="#archive-section" data-nav-link data-section="archive-section">
+            <i data-lucide="archive"></i>
+            <span>归档</span>
+          </a>
+          <button class="nav-expander" type="button" data-nav-menu="archive" aria-label="展开归档导航" aria-expanded="false" aria-controls="navMega">
+            <i data-lucide="chevron-down"></i>
+          </button>
+        </div>
+        <div class="nav-item">
+          <a class="nav-anchor" href="#guestbook" data-nav-link data-section="guestbook">
+            <i data-lucide="message-square-text"></i>
+            <span>留言</span>
+          </a>
+          <button class="nav-expander" type="button" data-nav-menu="tools" aria-label="展开留言与工具导航" aria-expanded="false" aria-controls="navMega">
+            <i data-lucide="chevron-down"></i>
+          </button>
+        </div>
+        <div class="nav-item">
+          <a class="nav-anchor" href="#links" data-nav-link data-section="links">
+            <i data-lucide="link"></i>
+            <span>友链</span>
+          </a>
+          <button class="nav-expander" type="button" data-nav-menu="site" aria-label="展开友链导航" aria-expanded="false" aria-controls="navMega">
+            <i data-lucide="chevron-down"></i>
+          </button>
+        </div>
+        <div class="nav-item">
+          <a class="nav-anchor" href="#about" data-nav-link data-section="about">
+            <i data-lucide="user-round"></i>
+            <span>关于</span>
+          </a>
+          <button class="nav-expander" type="button" data-nav-menu="site" aria-label="展开关于导航" aria-expanded="false" aria-controls="navMega">
+            <i data-lucide="chevron-down"></i>
+          </button>
+        </div>
+      </nav>
+
+      <div class="header-actions">
+        <button class="icon-button" id="searchOpen" title="站内搜索" aria-label="站内搜索">
+          <i data-lucide="search"></i>
+        </button>
+        <button class="icon-button optional-action" id="randomPost" title="随机阅读" aria-label="随机阅读">
+          <i data-lucide="shuffle"></i>
+        </button>
+        <button class="icon-button optional-action" id="wallpaperMode" title="壁纸模式" aria-label="壁纸模式">
+          <i data-lucide="image"></i>
+        </button>
+        <button class="icon-button" id="themeToggle" title="切换主题" aria-label="切换主题">
+          <i data-lucide="moon"></i>
+        </button>
+        <button
+          class="icon-button menu-toggle"
+          id="mobileMenuToggle"
+          title="打开菜单"
+          aria-label="打开菜单"
+          aria-expanded="false"
+          aria-controls="mobileDrawer"
+        >
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="nav-shield" id="navShield" hidden></div>
+    <section class="nav-mega" id="navMega" hidden aria-labelledby="navMegaTitle">
+      <div class="nav-mega-head">
+        <div>
+          <p class="eyebrow">Navigation Box</p>
+          <h2 id="navMegaTitle">导航盒</h2>
+        </div>
+        <button class="icon-button" id="navMegaClose" type="button" title="关闭导航盒" aria-label="关闭导航盒">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="nav-mega-tabs" role="tablist" aria-label="导航盒分类">
+        <button class="nav-tab is-active" type="button" data-nav-panel="articles">
+          <i data-lucide="newspaper"></i>
+          文章
+        </button>
+        <button class="nav-tab" type="button" data-nav-panel="topics">
+          <i data-lucide="folder-kanban"></i>
+          专题
+        </button>
+        <button class="nav-tab" type="button" data-nav-panel="archive">
+          <i data-lucide="archive"></i>
+          归档
+        </button>
+        <button class="nav-tab" type="button" data-nav-panel="tools">
+          <i data-lucide="wand-sparkles"></i>
+          工具
+        </button>
+        <button class="nav-tab" type="button" data-nav-panel="site">
+          <i data-lucide="sparkles"></i>
+          站点
+        </button>
+      </div>
+      <div class="nav-mega-body" id="navMegaBody"></div>
+    </section>
+
+    <div class="mobile-drawer" id="mobileDrawer" hidden>
+      <nav aria-label="移动端导航">
+        <a href="#posts" data-mobile-link>
+          <i data-lucide="newspaper"></i>
+          文章
+        </a>
+        <a href="#topics" data-mobile-link>
+          <i data-lucide="folder-kanban"></i>
+          专题
+        </a>
+        <a href="#archive-section" data-mobile-link>
+          <i data-lucide="archive"></i>
+          归档
+        </a>
+        <a href="#guestbook" data-mobile-link>
+          <i data-lucide="message-square-text"></i>
+          留言
+        </a>
+        <a href="#links" data-mobile-link>
+          <i data-lucide="link"></i>
+          友链
+        </a>
+        <a href="#about" data-mobile-link>
+          <i data-lucide="user-round"></i>
+          关于
+        </a>
+      </nav>
+      <div class="drawer-actions">
+        <button class="text-button" id="drawerSearch" type="button">
+          <i data-lucide="search"></i>
+          搜索文章
+        </button>
+        <button class="text-button" id="drawerRandom" type="button">
+          <i data-lucide="shuffle"></i>
+          随机阅读
+        </button>
+      </div>
+      <div class="mobile-hub" id="mobileHub"></div>
+    </div>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="site-title">
+        <img class="hero-image" src="assets/hero-anime.png" alt="动漫风格的屋顶书桌、晴空和城市天际线" />
+        <div class="hero-scrim"></div>
+        <div class="floating-note note-a" aria-hidden="true">SAKURA_LOG</div>
+        <div class="floating-note note-b" aria-hidden="true">SKY_NOTE</div>
+        <div class="floating-note note-c" aria-hidden="true">CODE_DIARY</div>
+        <div class="hero-time-layer" aria-live="polite">
+          <span class="time-layer-clock" id="heroClockTime">--:--:--</span>
+          <span class="time-layer-date" id="heroClockDate">--</span>
+        </div>
+        <div class="hero-content">
+          <p class="kicker">ANIME / NOTES / YIFAN-TECH</p>
+          <h1 id="site-title">一帆札记</h1>
+          <p class="hero-copy">
+            把日常与代码写进一页晴空，做一个清新、可检索、能长期生长的个人博客。
+          </p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#posts">
+              <span>开始阅读</span>
+              <i data-lucide="arrow-down"></i>
+            </a>
+            <button class="ghost-button" id="heroRandom" type="button">
+              <i data-lucide="sparkles"></i>
+              随机一篇
+            </button>
+            <button class="ghost-button" id="heroSearch" type="button">
+              <i data-lucide="command"></i>
+              快捷搜索
+            </button>
+          </div>
+        </div>
+        <div class="hero-dock" aria-label="站点状态">
+          <div>
+            <span class="dock-number" id="heroPostCount">00</span>
+            <span class="dock-label">已发布</span>
+          </div>
+          <div>
+            <span class="dock-number" id="heroTopicCount">00</span>
+            <span class="dock-label">专题</span>
+          </div>
+          <div>
+            <span class="dock-number" id="heroRunDays">0d</span>
+            <span class="dock-label">运行</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="quick-board" aria-label="快捷入口">
+        <a class="quick-card" href="#top" data-quick-target="#top">
+          <i data-lucide="home"></i>
+          <div>
+            <h2>主页</h2>
+            <p>回到横幅与个人空间。</p>
+          </div>
+        </a>
+        <button class="quick-card" type="button" data-nav-action="search">
+          <i data-lucide="search"></i>
+          <div>
+            <h2>搜索</h2>
+            <p>按标题、摘要、标签查找。</p>
+          </div>
+        </button>
+        <a class="quick-card" href="#topics" data-quick-target="#topics">
+          <i data-lucide="map"></i>
+          <div>
+            <h2>专题 <small id="quickTopicCount">00</small></h2>
+            <p>按主题进入内容。</p>
+          </div>
+        </a>
+        <a class="quick-card" href="#archive-section" data-quick-target="#archive-section">
+          <i data-lucide="archive"></i>
+          <div>
+            <h2>归档 <small id="quickArchiveCount">00</small></h2>
+            <p>按时间回看文章。</p>
+          </div>
+        </a>
+        <button class="quick-card" type="button" data-nav-action="random">
+          <i data-lucide="shuffle"></i>
+          <div>
+            <h2>随机</h2>
+            <p>抽一篇开始阅读。</p>
+          </div>
+        </button>
+        <a class="quick-card" href="https://github.com/yifan-tech" target="_blank" rel="noreferrer">
+          <i data-lucide="git-branch"></i>
+          <div>
+            <h2>GitHub</h2>
+            <p>yifan-tech 主页。</p>
+          </div>
+        </a>
+      </section>
+
+      <div class="page-shell">
+        <aside class="sidebar" id="about" aria-label="个人资料">
+          <section class="panel profile-panel">
+            <div class="avatar" aria-hidden="true">北</div>
+            <div>
+              <p class="eyebrow">站长</p>
+              <h2>一帆</h2>
+              <p class="muted">
+                Java Web 学习者，喜欢把复杂问题拆成清楚的小块，也喜欢在晴空、书桌和键盘声里写一点慢慢的文字。
+              </p>
+              <div class="profile-actions" aria-label="个人链接">
+                <a href="https://github.com/yifan-tech" target="_blank" rel="noreferrer" title="GitHub">
+                  <i data-lucide="git-branch"></i>
+                </a>
+                <a href="#guestbook" title="留言">
+                  <i data-lucide="mail"></i>
+                </a>
+                <a href="#archive-section" title="归档">
+                  <i data-lucide="rss"></i>
+                </a>
+              </div>
+            </div>
+            <dl class="profile-stats">
+              <div>
+                <dt>文章</dt>
+                <dd id="statPosts">0</dd>
+              </div>
+              <div>
+                <dt>标签</dt>
+                <dd id="statTags">0</dd>
+              </div>
+              <div>
+                <dt>字数</dt>
+                <dd id="statWords">0k</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel pulse-panel">
+            <div class="panel-heading">
+              <i data-lucide="activity"></i>
+              <h2>写作脉冲</h2>
+            </div>
+            <div class="heatmap" id="heatmap" aria-label="最近写作热力图"></div>
+            <p class="muted small-copy">深浅代表最近几周的更新频率。</p>
+          </section>
+
+          <section class="panel notice-panel">
+            <div class="panel-heading">
+              <i data-lucide="megaphone"></i>
+              <h2>公告</h2>
+            </div>
+            <p>
+              这是纯静态版本，文章、专题、归档、留言和搜索都在前端完成。后续可以直接替换数据或部署到任意静态空间。
+            </p>
+          </section>
+
+          <section class="panel now-panel">
+            <div class="panel-heading">
+              <i data-lucide="music-2"></i>
+              <h2>音乐</h2>
+            </div>
+            <p class="now-title">正在循环</p>
+            <p class="muted">sakura lofi / keyboard / sky note</p>
+            <div class="equalizer" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </section>
+
+          <section class="panel task-panel">
+            <div class="panel-heading">
+              <i data-lucide="list-checks"></i>
+              <h2>建站清单</h2>
+            </div>
+            <label><input type="checkbox" checked disabled /> 首页原型</label>
+            <label><input type="checkbox" checked disabled /> 本地搜索</label>
+            <label><input type="checkbox" disabled /> Markdown 文章</label>
+            <label><input type="checkbox" disabled /> RSS 输出</label>
+          </section>
+
+          <section class="panel tag-panel">
+            <div class="panel-heading">
+              <i data-lucide="tags"></i>
+              <h2>标签云</h2>
+            </div>
+            <div class="tag-cloud" id="tagCloud"></div>
+          </section>
+
+          <section class="panel links-panel" id="links">
+            <div class="panel-heading">
+              <i data-lucide="waypoints"></i>
+              <h2>传送门</h2>
+            </div>
+            <a href="https://github.com/yifan-tech" target="_blank" rel="noreferrer">
+              <span>GitHub 主页 / yifan-tech</span>
+              <i data-lucide="external-link"></i>
+            </a>
+            <a href="https://yifan-tech.github.io/" target="_blank" rel="noreferrer">
+              <span>GitHub Pages</span>
+              <i data-lucide="external-link"></i>
+            </a>
+            <a href="https://www.hnwu.edu.cn/" target="_blank" rel="noreferrer">
+              <span>学校官网</span>
+              <i data-lucide="external-link"></i>
+            </a>
+            <a href="#posts">
+              <span>最近更新</span>
+              <i data-lucide="newspaper"></i>
+            </a>
+            <a href="#archive-section">
+              <span>时间归档</span>
+              <i data-lucide="archive"></i>
+            </a>
+            <a href="#guestbook">
+              <span>留言板</span>
+              <i data-lucide="message-square-text"></i>
+            </a>
+          </section>
+        </aside>
+
+        <section class="content-stack" id="posts" aria-label="文章列表">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Recent Posts</p>
+              <h2>最近更新</h2>
+            </div>
+            <div class="toolbar" role="group" aria-label="文章工具栏">
+              <label class="search-box">
+                <i data-lucide="search"></i>
+                <input id="postSearch" type="search" placeholder="搜索标题、摘要或标签" />
+              </label>
+              <label class="select-box">
+                <i data-lucide="arrow-up-down"></i>
+                <select id="sortSelect" aria-label="排序方式">
+                  <option value="newest">最新发布</option>
+                  <option value="popular">最多浏览</option>
+                  <option value="liked">最多喜欢</option>
+                </select>
+              </label>
+              <div class="segmented" aria-label="列表布局">
+                <button class="segment is-active" data-layout="list" title="列表" aria-label="列表">
+                  <i data-lucide="rows-3"></i>
+                </button>
+                <button class="segment" data-layout="grid" title="网格" aria-label="网格">
+                  <i data-lucide="layout-grid"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-row" id="filterRow" aria-label="文章分类"></div>
+          <article class="featured-post" id="featuredPost"></article>
+          <div class="post-list list-mode" id="postList"></div>
+          <p class="empty-state" id="emptyState" hidden>没有找到匹配的文章。</p>
+
+          <section class="topics-section page-section" id="topics" aria-labelledby="topics-title">
+            <div class="section-title-row">
+              <div>
+                <p class="eyebrow">Topics</p>
+                <h2 id="topics-title">专题入口</h2>
+              </div>
+              <p class="muted">按阅读意图进入，而不是只按时间刷列表。</p>
+            </div>
+            <div class="topic-grid" id="topicGrid"></div>
+          </section>
+
+          <section class="archive-section page-section" id="archive-section" aria-labelledby="archive-title">
+            <div class="section-title-row">
+              <div>
+                <p class="eyebrow">Archive</p>
+                <h2 id="archive-title">时间归档</h2>
+              </div>
+              <p class="muted">静态生成的归档视图，方便以后替换为真实文章数据。</p>
+            </div>
+            <div class="archive-list" id="archiveList"></div>
+          </section>
+
+          <section class="guestbook page-section" id="guestbook" aria-labelledby="guestbook-title">
+            <div class="section-title-row">
+              <div>
+                <p class="eyebrow">Guestbook</p>
+                <h2 id="guestbook-title">留言板</h2>
+              </div>
+              <p class="muted">纯静态留言，内容只保存在当前浏览器。</p>
+            </div>
+            <div class="guestbook-grid">
+              <form class="guest-form" id="guestForm">
+                <label>
+                  昵称
+                  <input id="guestName" maxlength="16" placeholder="路过的读者" />
+                </label>
+                <label>
+                  留言
+                  <textarea id="guestMessage" maxlength="120" placeholder="写一句想说的话"></textarea>
+                </label>
+                <button class="primary-button" type="submit">
+                  <span>提交留言</span>
+                  <i data-lucide="send"></i>
+                </button>
+              </form>
+              <div class="message-list" id="messageList"></div>
+            </div>
+          </section>
+        </section>
+
+        <aside class="right-rail" aria-label="站点工具">
+          <section class="panel stats-panel">
+            <div class="panel-heading">
+              <i data-lucide="bar-chart-3"></i>
+              <h2>站点统计</h2>
+            </div>
+            <dl class="rail-stats">
+              <div>
+                <dt><i data-lucide="file-text"></i> 文章</dt>
+                <dd id="railPosts">0</dd>
+              </div>
+              <div>
+                <dt><i data-lucide="folder"></i> 分类</dt>
+                <dd id="railCategories">0</dd>
+              </div>
+              <div>
+                <dt><i data-lucide="tags"></i> 标签</dt>
+                <dd id="railTags">0</dd>
+              </div>
+              <div>
+                <dt><i data-lucide="book-marked"></i> 总字数</dt>
+                <dd id="railWords">0</dd>
+              </div>
+              <div>
+                <dt><i data-lucide="clock-3"></i> 运行时长</dt>
+                <dd id="railRunDays">0 天</dd>
+              </div>
+              <div>
+                <dt><i data-lucide="sparkles"></i> 最后活动</dt>
+                <dd id="railLastActivity">--</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel calendar-panel">
+            <div class="calendar-head">
+              <button class="icon-button" type="button" aria-label="上个月">
+                <i data-lucide="chevron-left"></i>
+              </button>
+              <h2>2026年6月</h2>
+              <button class="icon-button" type="button" aria-label="下个月">
+                <i data-lucide="chevron-right"></i>
+              </button>
+            </div>
+            <div class="mini-calendar" aria-label="文章日历">
+              <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+              <time></time><time>1</time><time>2</time><time>3</time><time class="is-active">4</time><time>5</time><time>6</time><time>7</time>
+              <time>8</time><time>9</time><time>10</time><time class="is-active">11</time><time>12</time><time>13</time><time>14</time>
+              <time>15</time><time>16</time><time>17</time><time>18</time><time>19</time><time>20</time><time>21</time>
+              <time>22</time><time>23</time><time>24</time><time>25</time><time>26</time><time>27</time><time>28</time>
+              <time>29</time><time>30</time>
+            </div>
+          </section>
+
+          <section class="panel toc-panel">
+            <div class="panel-heading">
+              <i data-lucide="list-tree"></i>
+              <h2>快捷目录</h2>
+            </div>
+            <a href="#posts">最近更新</a>
+            <a href="#topics">专题入口</a>
+            <a href="#archive-section">时间归档</a>
+            <a href="#guestbook">留言板</a>
+          </section>
+
+          <section class="panel display-panel">
+            <div class="panel-heading">
+              <i data-lucide="sliders-horizontal"></i>
+              <h2>显示设置</h2>
+            </div>
+            <button class="rail-action" type="button" data-nav-action="search">
+              <i data-lucide="search"></i>
+              搜索文章
+            </button>
+            <button class="rail-action" type="button" data-nav-action="random">
+              <i data-lucide="shuffle"></i>
+              随机文章
+            </button>
+            <button class="rail-action" type="button" data-nav-action="theme">
+              <i data-lucide="sun-moon"></i>
+              亮暗模式
+            </button>
+            <button class="rail-action" type="button" data-nav-action="wallpaper">
+              <i data-lucide="image"></i>
+              壁纸模式
+            </button>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <button class="back-to-top icon-button" id="backToTop" title="回到顶部" aria-label="回到顶部">
+      <i data-lucide="arrow-up"></i>
+    </button>
+
+    <dialog class="palette-dialog" id="searchPalette">
+      <div class="palette-card">
+        <div class="palette-input">
+          <i data-lucide="search"></i>
+          <input id="paletteSearch" type="search" placeholder="搜索文章、标签、分类" />
+          <kbd>Esc</kbd>
+        </div>
+        <div class="palette-results" id="paletteResults"></div>
+      </div>
+    </dialog>
+
+    <dialog class="post-dialog" id="postDialog">
+      <article>
+        <button class="dialog-close icon-button" id="dialogClose" title="关闭" aria-label="关闭">
+          <i data-lucide="x"></i>
+        </button>
+        <p class="eyebrow" id="dialogMeta"></p>
+        <h2 id="dialogTitle"></h2>
+        <div class="dialog-tags" id="dialogTags"></div>
+        <div class="dialog-actions">
+          <button class="text-button" id="dialogLike" type="button">
+            <i data-lucide="heart"></i>
+            <span>喜欢</span>
+          </button>
+          <button class="text-button" id="dialogBookmark" type="button">
+            <i data-lucide="bookmark"></i>
+            <span>收藏</span>
+          </button>
+          <button class="text-button" id="fontMinus" type="button">
+            <i data-lucide="minus"></i>
+            字号
+          </button>
+          <button class="text-button" id="fontPlus" type="button">
+            <i data-lucide="plus"></i>
+            字号
+          </button>
+        </div>
+        <div class="dialogBody" id="dialogBody"></div>
+      </article>
+    </dialog>
+
+    <footer class="site-footer">
+      <p>一帆札记 © 2026</p>
+      <p>
+        纯静态页面 / HTML + CSS + JavaScript + GSAP / 结构参考
+        <a href="https://github.com/CuteLeaf/Firefly" target="_blank" rel="noreferrer">Firefly</a>
+      </p>
+    </footer>
+  </body>
+</html>
