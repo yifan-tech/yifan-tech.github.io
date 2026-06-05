@@ -14,6 +14,7 @@
   --soft-shadow: 0 10px 28px rgba(35, 47, 45, 0.1);
   --radius: 8px;
   --header-h: 74px;
+  --time-wallpaper: url("hero-anime.png");
   --max: 1200px;
   --display: "STKaiti", "KaiTi", "FangSong", "Songti SC", serif;
   --body: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif;
@@ -142,9 +143,17 @@ textarea {
 }
 
 .wallpaper-stage img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.wallpaper-stage img.is-active {
+  opacity: 1;
 }
 
 .wallpaper-veil {
@@ -674,7 +683,13 @@ html[data-wallpaper="clean"] .hero {
   width: 100%;
   height: 112%;
   object-fit: cover;
+  opacity: 0;
   transform-origin: center;
+  transition: opacity 1.2s ease;
+}
+
+.hero-image.is-active {
+  opacity: 1;
 }
 
 html[data-wallpaper="fullscreen"] .hero-image,
@@ -1283,7 +1298,7 @@ html[data-wallpaper="clean"] .quick-board {
   border-radius: var(--radius);
   background:
     linear-gradient(135deg, rgba(190, 77, 99, 0.82), rgba(35, 125, 105, 0.72)),
-    url("hero-anime.png") center / cover;
+    var(--time-wallpaper) center / cover;
 }
 
 .post-list {
@@ -1413,25 +1428,25 @@ html[data-theme="dark"] .post-card:hover {
 .post-cover[data-tone="green"] {
   background:
     linear-gradient(135deg, rgba(35, 125, 105, 0.88), rgba(29, 42, 45, 0.8)),
-    url("hero-anime.png") center / cover;
+    var(--time-wallpaper) center / cover;
 }
 
 .post-cover[data-tone="rose"] {
   background:
     linear-gradient(135deg, rgba(190, 77, 99, 0.86), rgba(29, 42, 45, 0.76)),
-    url("hero-anime.png") center / cover;
+    var(--time-wallpaper) center / cover;
 }
 
 .post-cover[data-tone="amber"] {
   background:
     linear-gradient(135deg, rgba(216, 152, 49, 0.86), rgba(29, 42, 45, 0.78)),
-    url("hero-anime.png") center / cover;
+    var(--time-wallpaper) center / cover;
 }
 
 .post-cover[data-tone="blue"] {
   background:
     linear-gradient(135deg, rgba(56, 109, 146, 0.86), rgba(29, 42, 45, 0.78)),
-    url("hero-anime.png") center / cover;
+    var(--time-wallpaper) center / cover;
 }
 
 .post-signal {
@@ -1954,16 +1969,76 @@ html[data-theme="dark"] .post-card:hover {
 }
 
 .site-footer {
+  position: relative;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 10px;
-  width: min(var(--max), calc(100% - 32px));
-  margin: 0 auto 36px;
-  padding-top: 18px;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
+  align-items: flex-end;
+  width: 100%;
+  min-height: clamp(420px, 42vw, 620px);
+  margin: 72px 0 0;
+  padding: clamp(180px, 24vw, 340px) max(16px, calc((100% - var(--max)) / 2)) 38px;
+  overflow: hidden;
+  border: 0;
+  background:
+    linear-gradient(180deg, var(--bg) 0%, transparent 24%),
+    linear-gradient(0deg, rgba(7, 13, 36, 0.8), transparent 50%),
+    url("footer-panorama.png") center / cover no-repeat;
+  color: #f7f8ff;
   font-size: 0.9rem;
+}
+
+.site-footer::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background:
+    radial-gradient(circle at 72% 78%, rgba(255, 185, 112, 0.16), transparent 24%),
+    linear-gradient(90deg, rgba(7, 13, 36, 0.18), transparent 46%, rgba(7, 13, 36, 0.12));
+}
+
+.footer-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+  padding: 22px 26px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
+  background: rgba(8, 15, 39, 0.46);
+  box-shadow: 0 20px 60px rgba(3, 8, 25, 0.24);
+  backdrop-filter: blur(14px);
+}
+
+.footer-content p {
+  margin: 0;
+}
+
+.footer-content strong {
+  display: block;
+  margin-top: 5px;
+  color: #fff;
+  font-family: var(--display);
+  font-size: clamp(1.25rem, 2vw, 2rem);
+  letter-spacing: 0.08em;
+}
+
+.footer-kicker {
+  color: #a8dbff;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.footer-meta {
+  color: rgba(247, 248, 255, 0.72);
+  text-align: right;
+}
+
+.site-footer a {
+  color: #ffd795;
 }
 
 @media (max-width: 1100px) {
@@ -2077,9 +2152,25 @@ html[data-theme="dark"] .post-card:hover {
   }
 
   .quick-board,
-  .page-shell,
-  .site-footer {
+  .page-shell {
     width: calc(100% - 22px);
+  }
+
+  .site-footer {
+    min-height: 480px;
+    margin-top: 48px;
+    padding: 220px 12px 18px;
+    background-position: 64% center;
+  }
+
+  .footer-content {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 18px;
+  }
+
+  .footer-meta {
+    text-align: left;
   }
 
   .quick-board {

@@ -1,4 +1,4 @@
-# 北辰札记个人博客原型
+# 凌云客栈个人博客原型
 
 这是一个参考 `https://blog.520781.xyz/` 和 [CuteLeaf/Firefly](https://github.com/CuteLeaf/Firefly) 的个人博客静态页面，只使用 `HTML + CSS + JavaScript + 图片资源`。当前视觉方向是 Firefly 启发的原创二次元风格：清透晴空、动漫横幅、三栏博客布局、玻璃质感卡片、柔和高亮和轻量动效。
 

@@ -124,7 +124,7 @@ function articleHTML(post, previous, next) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="${escapeHTML(post.summary)}" />
-    <title>${escapeHTML(post.title)} - 一帆札记</title>
+    <title>${escapeHTML(post.title)} - 凌云客栈</title>
     <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="../assets/styles.css" />
     <link rel="stylesheet" href="../assets/anime.css" />
@@ -147,10 +147,10 @@ function articleHTML(post, previous, next) {
 
     <header class="site-header static-header">
       <a class="brand" href="../index.html">
-        <span class="brand-mark">B</span>
-        <span class="brand-copy">
-          <strong>一帆札记</strong>
-          <small>yifan notes</small>
+          <span class="brand-mark">L</span>
+          <span class="brand-copy">
+          <strong>凌云客栈</strong>
+          <small>lingyun inn</small>
         </span>
       </a>
       <nav class="article-nav" aria-label="文章页导航">
@@ -222,7 +222,7 @@ function postsIndexHTML(posts) {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>文章列表 - 一帆札记</title>
+    <title>文章列表 - 凌云客栈</title>
     <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="../assets/styles.css" />
     <link rel="stylesheet" href="../assets/anime.css" />
@@ -238,7 +238,7 @@ function postsIndexHTML(posts) {
       <div class="wallpaper-veil"></div>
     </div>
     <header class="site-header static-header">
-      <a class="brand" href="../index.html"><span class="brand-mark">B</span><span class="brand-copy"><strong>一帆札记</strong><small>yifan notes</small></span></a>
+      <a class="brand" href="../index.html"><span class="brand-mark">L</span><span class="brand-copy"><strong>凌云客栈</strong><small>lingyun inn</small></span></a>
       <nav class="article-nav" aria-label="文章列表导航">
         <a href="../index.html">首页</a>
         <a href="../index.html#topics">专题</a>

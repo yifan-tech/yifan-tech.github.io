@@ -1,16 +1,19 @@
 const siteConfig = {
-  wallpaperModes: ["banner", "fullscreen", "overlay", "clean"],
   defaultTag: "全部",
   launchDate: "2026-01-27",
   storageKeys: {
     theme: "blogTheme",
-    wallpaper: "wallpaperMode",
     layout: "blogLayout",
     favorites: "blogFavorites",
     liked: "blogLiked",
     messages: "blogMessages",
     readerScale: "readerScale",
     accent: "blogAccent",
+    musicVolume: "blogMusicVolume",
+    musicTrack: "blogMusicTrack",
+    pet: "blogPixelPet",
+    petCollapsed: "blogPixelPetCollapsed",
+    petPosition: "blogPixelPetPosition",
   },
 };
 
@@ -350,7 +353,7 @@ const topicData = [
 const defaultMessages = [
   {
     name: "一帆",
-    message: "欢迎来到一帆札记。这个留言板是纯静态本地保存，可以先体验交互。",
+    message: "欢迎来到凌云客栈。这个留言板是纯静态本地保存，可以先体验交互。",
     time: "2026-06-04",
   },
   {
@@ -360,12 +363,64 @@ const defaultMessages = [
   },
 ];
 
+const musicPlaylist = [
+  {
+    id: "sakura-pulse",
+    title: "樱花脉冲",
+    subtitle: "柔和合成器",
+    tempo: 1450,
+    waveform: "sine",
+    filter: 1400,
+    chord: [196, 246.94, 293.66],
+    melody: [392, 440, 493.88, 587.33, 493.88, 440, 369.99, 392],
+  },
+  {
+    id: "midnight-terminal",
+    title: "午夜终端",
+    subtitle: "低频电子氛围",
+    tempo: 1120,
+    waveform: "triangle",
+    filter: 980,
+    chord: [146.83, 220, 293.66],
+    melody: [293.66, 329.63, 392, 440, 392, 329.63, 277.18, 293.66],
+  },
+  {
+    id: "rainy-window",
+    title: "雨窗来信",
+    subtitle: "缓慢玻璃音色",
+    tempo: 1780,
+    waveform: "sine",
+    filter: 1180,
+    chord: [174.61, 220, 261.63],
+    melody: [349.23, 392, 440, 523.25, 440, 392, 329.63, 349.23],
+  },
+  {
+    id: "blue-hour",
+    title: "蓝调时刻",
+    subtitle: "清亮像素波",
+    tempo: 920,
+    waveform: "square",
+    filter: 1650,
+    chord: [220, 277.18, 329.63],
+    melody: [440, 554.37, 659.25, 554.37, 493.88, 440, 369.99, 415.3],
+  },
+  {
+    id: "cloud-library",
+    title: "云端图书馆",
+    subtitle: "安静阅读循环",
+    tempo: 1560,
+    waveform: "triangle",
+    filter: 1280,
+    chord: [164.81, 207.65, 246.94],
+    melody: [329.63, 369.99, 415.3, 493.88, 415.3, 369.99, 311.13, 329.63],
+  },
+];
+
 const state = {
   tag: siteConfig.defaultTag,
   query: "",
   layout: localStorage.getItem(siteConfig.storageKeys.layout) || "list",
   sort: "newest",
-  wallpaper: localStorage.getItem(siteConfig.storageKeys.wallpaper) || "banner",
   favorites: new Set(readJSON(siteConfig.storageKeys.favorites, [])),
   liked: new Set(readJSON(siteConfig.storageKeys.liked, [])),
   readerScale: Number(localStorage.getItem(siteConfig.storageKeys.readerScale)) || 1,
@@ -375,15 +430,61 @@ const state = {
   navTrigger: null,
   activeNavPanel: "articles",
   accent: localStorage.getItem(siteConfig.storageKeys.accent) || "rose",
+  musicVolume: Number(localStorage.getItem(siteConfig.storageKeys.musicVolume)) || 34,
+  musicTrackIndex: Math.max(
+    0,
+    musicPlaylist.findIndex(
+      (track) => track.id === localStorage.getItem(siteConfig.storageKeys.musicTrack),
+    ),
+  ),
+  calendarDate: new Date(),
+  pet: readObject(siteConfig.storageKeys.pet, {
+    mood: 80,
+    energy: 70,
+    exp: 0,
+    updatedAt: Date.now(),
+  }),
   animationsReady: false,
 };
 
 let els = {};
+let musicEngine = null;
+let petSpeechTimer = null;
+let petVisualTimer = null;
+let activeTimePhase = null;
+
+const timePhaseAssets = {
+  morning: {
+    src: "assets/hero-morning.png",
+    alt: "清晨阳光下的动漫风格屋顶书桌与城市天际线",
+  },
+  day: {
+    src: "assets/hero-anime.png",
+    alt: "晴朗白昼中的动漫风格屋顶书桌与城市天际线",
+  },
+  dusk: {
+    src: "assets/hero-dusk.png",
+    alt: "夕阳映照下的动漫风格屋顶书桌与城市天际线",
+  },
+  night: {
+    src: "assets/hero-night.png",
+    alt: "月夜灯光下的动漫风格屋顶书桌与城市天际线",
+  },
+};
 
 function readJSON(key, fallback) {
   try {
     const value = JSON.parse(localStorage.getItem(key));
     return Array.isArray(value) ? value : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function readObject(key, fallback) {
+  try {
+    const value = JSON.parse(localStorage.getItem(key));
+    return value && typeof value === "object" && !Array.isArray(value) ? { ...fallback, ...value } : fallback;
   } catch {
     return fallback;
   }
@@ -460,6 +561,30 @@ function cacheElements() {
     navIndicator: $("#navIndicator"),
     heroClockTime: $("#heroClockTime"),
     heroClockDate: $("#heroClockDate"),
+    heroImages: $$(".hero-image"),
+    wallpaperImages: $$(".wallpaper-image"),
+    musicStatus: $("#musicStatus"),
+    musicTrack: $("#musicTrack"),
+    musicPlaylist: $("#musicPlaylist"),
+    musicPrev: $("#musicPrev"),
+    musicToggle: $("#musicToggle"),
+    musicNext: $("#musicNext"),
+    musicVolume: $("#musicVolume"),
+    musicEqualizer: $("#musicEqualizer"),
+    calendarTitle: $("#calendarTitle"),
+    calendarToday: $("#calendarToday"),
+    miniCalendar: $("#miniCalendar"),
+    calendarPrev: $("#calendarPrev"),
+    calendarNext: $("#calendarNext"),
+    calendarReset: $("#calendarReset"),
+    petWidget: $("#pixelPetWidget"),
+    pixelPet: $("#pixelPet"),
+    petSprite: $("#petSprite"),
+    petSpeech: $("#petSpeech"),
+    petMood: $("#petMood"),
+    petEnergy: $("#petEnergy"),
+    petLevel: $("#petLevel"),
+    petCollapse: $("#petCollapse"),
     guestForm: $("#guestForm"),
     messageList: $("#messageList"),
   };
@@ -929,7 +1054,6 @@ function renderNavPanel(panel = state.activeNavPanel) {
           <h3><i data-lucide="paintbrush"></i> 外观</h3>
           <div class="nav-action-list">
             ${navActionButton("sun-moon", "明暗主题", "在浅色和深色之间切换", "theme")}
-            ${navActionButton("image", "壁纸模式", "横幅、全屏、透明和纯净模式", "wallpaper")}
           </div>
           <h3><i data-lucide="pipette"></i> 色彩</h3>
           <div class="nav-color-row">
@@ -987,7 +1111,6 @@ function renderMobileHub() {
       <div class="nav-action-list">
         ${navActionButton("heart", "最多喜欢", "按喜欢排序", "sort-liked")}
         ${navActionButton("eye", "最多浏览", "按浏览排序", "sort-popular")}
-        ${navActionButton("image", "壁纸模式", "切换背景显示", "wallpaper")}
         ${navActionButton("sun-moon", "明暗主题", "切换主题", "theme")}
       </div>
     </section>
@@ -1103,16 +1226,6 @@ function initTheme() {
   setTheme(stored || legacyStored || (systemDark ? "dark" : "light"));
 }
 
-function cycleWallpaper() {
-  const currentIndex = siteConfig.wallpaperModes.indexOf(state.wallpaper);
-  state.wallpaper = siteConfig.wallpaperModes[(currentIndex + 1) % siteConfig.wallpaperModes.length];
-  document.documentElement.dataset.wallpaper = state.wallpaper;
-  localStorage.setItem(siteConfig.storageKeys.wallpaper, state.wallpaper);
-  renderNavPanel(state.activeNavPanel);
-  renderMobileHub();
-  refreshScrollTriggers();
-}
-
 function updateProgress() {
   const scrollable = document.documentElement.scrollHeight - window.innerHeight;
   const progress = scrollable <= 0 ? 0 : (window.scrollY / scrollable) * 100;
@@ -1137,9 +1250,7 @@ function updateHeroClock() {
   })
     .format(now)
     .replace(/\//g, ".");
-  if (document.documentElement.dataset.timePhase !== phase.key) {
-    document.documentElement.dataset.timePhase = phase.key;
-  }
+  applyTimePhase(phase.key);
 }
 
 function getTimePhase(hour) {
@@ -1153,6 +1264,463 @@ function getTimePhase(hour) {
     return { key: "dusk" };
   }
   return { key: "night" };
+}
+
+function swapTimedImage(layers, asset, decorative = false) {
+  if (!layers?.length) return;
+  const current = layers.find((layer) => layer.classList.contains("is-active")) || layers[0];
+  const currentSrc = new URL(current.getAttribute("src"), window.location.href).href;
+  const targetSrc = new URL(asset.src, window.location.href).href;
+
+  if (currentSrc === targetSrc) {
+    if (!decorative) current.alt = asset.alt;
+    return;
+  }
+
+  const next = layers.find((layer) => layer !== current) || current;
+  const reveal = () => {
+    next.classList.add("is-active");
+    current.classList.remove("is-active");
+  };
+
+  next.alt = decorative ? "" : asset.alt;
+  next.src = asset.src;
+  if (next.complete) {
+    window.requestAnimationFrame(reveal);
+  } else {
+    next.addEventListener("load", reveal, { once: true });
+  }
+}
+
+function applyTimePhase(phaseKey) {
+  if (activeTimePhase === phaseKey) return;
+  const asset = timePhaseAssets[phaseKey];
+  if (!asset) return;
+
+  document.documentElement.dataset.timePhase = phaseKey;
+  swapTimedImage(els.heroImages, asset);
+  swapTimedImage(els.wallpaperImages, asset, true);
+  activeTimePhase = phaseKey;
+}
+
+function createMusicEngine(track = musicPlaylist[state.musicTrackIndex]) {
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContext) return null;
+
+  const context = new AudioContext();
+  const master = context.createGain();
+  const filter = context.createBiquadFilter();
+  master.gain.value = 0;
+  filter.type = "lowpass";
+  filter.frequency.value = track.filter;
+  filter.Q.value = 0.7;
+  filter.connect(master);
+  master.connect(context.destination);
+
+  const oscillators = track.chord.map((frequency, index) => {
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    oscillator.type = index === 0 ? "sine" : track.waveform;
+    oscillator.frequency.value = frequency;
+    gain.gain.value = index === 0 ? 0.075 : 0.025;
+    oscillator.connect(gain);
+    gain.connect(filter);
+    oscillator.start();
+    return oscillator;
+  });
+
+  let melodyIndex = 0;
+  const melodyTimer = window.setInterval(() => {
+    if (context.state !== "running") return;
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    oscillator.type = track.waveform;
+    oscillator.frequency.value = track.melody[melodyIndex % track.melody.length];
+    melodyIndex += 1;
+    gain.gain.setValueAtTime(0, context.currentTime);
+    gain.gain.linearRampToValueAtTime(0.035, context.currentTime + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 1.1);
+    oscillator.connect(gain);
+    gain.connect(filter);
+    oscillator.start();
+    oscillator.stop(context.currentTime + 1.15);
+  }, track.tempo);
+
+  return { context, master, oscillators, melodyTimer };
+}
+
+async function toggleMusic() {
+  if (musicEngine) {
+    const engine = musicEngine;
+    musicEngine = null;
+    window.clearInterval(engine.melodyTimer);
+    engine.master.gain.cancelScheduledValues(engine.context.currentTime);
+    engine.master.gain.linearRampToValueAtTime(0, engine.context.currentTime + 0.22);
+    window.setTimeout(() => engine.context.close(), 260);
+    updateMusicUI(false);
+    return;
+  }
+
+  musicEngine = createMusicEngine(musicPlaylist[state.musicTrackIndex]);
+  if (!musicEngine) {
+    els.musicStatus.textContent = "当前浏览器不支持音频合成";
+    return;
+  }
+  setMusicVolume(state.musicVolume);
+  updateMusicUI(true);
+  try {
+    await musicEngine.context.resume();
+  } catch {
+    els.musicStatus.textContent = "点击播放以启用音频";
+  }
+}
+
+function setMusicVolume(value) {
+  state.musicVolume = Math.max(0, Math.min(100, Number(value)));
+  localStorage.setItem(siteConfig.storageKeys.musicVolume, String(state.musicVolume));
+  if (els.musicVolume) els.musicVolume.value = String(state.musicVolume);
+  if (!musicEngine) return;
+  const target = (state.musicVolume / 100) * 0.34;
+  musicEngine.master.gain.cancelScheduledValues(musicEngine.context.currentTime);
+  musicEngine.master.gain.linearRampToValueAtTime(target, musicEngine.context.currentTime + 0.12);
+}
+
+function updateMusicUI(isPlaying) {
+  if (!els.musicToggle) return;
+  const track = musicPlaylist[state.musicTrackIndex];
+  els.musicStatus.textContent = isPlaying ? "正在播放" : "歌单已暂停";
+  els.musicTrack.textContent = `${track.title} / ${track.subtitle}`;
+  if (els.musicPlaylist) els.musicPlaylist.value = track.id;
+  els.musicToggle.title = isPlaying ? "暂停音乐" : "播放音乐";
+  els.musicToggle.setAttribute("aria-label", els.musicToggle.title);
+  els.musicToggle.innerHTML = `<i data-lucide="${isPlaying ? "pause" : "play"}"></i>`;
+  els.musicEqualizer.classList.toggle("is-playing", isPlaying);
+  refreshIcons();
+}
+
+function renderMusicPlaylist() {
+  if (!els.musicPlaylist) return;
+  els.musicPlaylist.replaceChildren(
+    ...musicPlaylist.map((track) => {
+      const option = document.createElement("option");
+      option.value = track.id;
+      option.textContent = `${track.title} · ${track.subtitle}`;
+      return option;
+    }),
+  );
+  els.musicPlaylist.value = musicPlaylist[state.musicTrackIndex].id;
+}
+
+async function selectMusicTrack(index) {
+  const wasPlaying = Boolean(musicEngine);
+  state.musicTrackIndex = (index + musicPlaylist.length) % musicPlaylist.length;
+  const track = musicPlaylist[state.musicTrackIndex];
+  localStorage.setItem(siteConfig.storageKeys.musicTrack, track.id);
+
+  if (wasPlaying) {
+    const engine = musicEngine;
+    musicEngine = null;
+    window.clearInterval(engine.melodyTimer);
+    engine.master.gain.cancelScheduledValues(engine.context.currentTime);
+    engine.master.gain.linearRampToValueAtTime(0, engine.context.currentTime + 0.12);
+    window.setTimeout(() => engine.context.close(), 150);
+    musicEngine = createMusicEngine(track);
+    setMusicVolume(state.musicVolume);
+    try {
+      await musicEngine.context.resume();
+    } catch {
+      els.musicStatus.textContent = "点击播放以启用音频";
+    }
+  }
+  updateMusicUI(wasPlaying);
+}
+
+function formatLocalDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function renderCalendar() {
+  if (!els.miniCalendar) return;
+  const view = state.calendarDate;
+  const year = view.getFullYear();
+  const month = view.getMonth();
+  const today = new Date();
+  const firstDay = new Date(year, month, 1);
+  const mondayOffset = (firstDay.getDay() + 6) % 7;
+  const startDate = new Date(year, month, 1 - mondayOffset);
+  const postsByDate = new Map();
+
+  posts.forEach((post) => {
+    if (!postsByDate.has(post.date)) postsByDate.set(post.date, []);
+    postsByDate.get(post.date).push(post);
+  });
+
+  els.calendarTitle.textContent = `${year}年${month + 1}月`;
+  els.calendarToday.textContent = new Intl.DateTimeFormat("zh-CN", {
+    month: "long",
+    day: "numeric",
+    weekday: "short",
+  }).format(today);
+
+  const weekdays = ["一", "二", "三", "四", "五", "六", "日"].map((label) => {
+    const span = document.createElement("span");
+    span.textContent = label;
+    return span;
+  });
+
+  const days = Array.from({ length: 42 }, (_, index) => {
+    const date = new Date(startDate);
+    date.setDate(startDate.getDate() + index);
+    const iso = formatLocalDate(date);
+    const dayPosts = postsByDate.get(iso) || [];
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = String(date.getDate());
+    button.dataset.calendarDate = iso;
+    button.classList.toggle("is-muted", date.getMonth() !== month);
+    button.classList.toggle("is-today", iso === formatLocalDate(today));
+    button.classList.toggle("has-post", dayPosts.length > 0);
+    button.classList.toggle("is-active", dayPosts.length > 0);
+    button.disabled = dayPosts.length === 0;
+    button.title = dayPosts.length
+      ? `${iso}：${dayPosts.map((post) => post.title).join("、")}`
+      : iso;
+    if (dayPosts.length) button.dataset.postId = dayPosts[0].id;
+    return button;
+  });
+
+  els.miniCalendar.replaceChildren(...weekdays, ...days);
+}
+
+function shiftCalendarMonth(offset) {
+  state.calendarDate = new Date(
+    state.calendarDate.getFullYear(),
+    state.calendarDate.getMonth() + offset,
+    1,
+  );
+  renderCalendar();
+}
+
+function savePet() {
+  state.pet.updatedAt = Date.now();
+  localStorage.setItem(siteConfig.storageKeys.pet, JSON.stringify(state.pet));
+}
+
+function petLevel() {
+  return Math.floor(state.pet.exp / 50) + 1;
+}
+
+function setPetSpeech(message) {
+  if (els.petSpeech) els.petSpeech.textContent = message;
+}
+
+const petFramePaths = {
+  idle: "assets/pet/frames/idle.png",
+  walk: "assets/pet/frames/walk-right.png",
+  wave: "assets/pet/frames/wave.png",
+  jump: "assets/pet/frames/jump.png",
+  fail: "assets/pet/frames/fail.png",
+  wait: "assets/pet/frames/wait.png",
+  sprint: "assets/pet/frames/sprint.png",
+  review: "assets/pet/frames/review.png",
+};
+
+function setPetVisualState(name, duration = 0) {
+  if (!els.petSprite || !petFramePaths[name]) return;
+  window.clearTimeout(petVisualTimer);
+  if (els.pixelPet.dataset.petState !== name) {
+    els.petSprite.src = petFramePaths[name];
+  }
+  els.pixelPet.dataset.petState = name;
+  if (duration) {
+    petVisualTimer = window.setTimeout(() => setPetVisualState("idle"), duration);
+  }
+}
+
+function preloadPetFrames() {
+  Object.values(petFramePaths).forEach((src) => {
+    const image = new Image();
+    image.src = src;
+  });
+}
+
+function readPetPosition() {
+  return readObject(siteConfig.storageKeys.petPosition, null);
+}
+
+function clampPetPosition(left, top) {
+  const margin = 10;
+  const rect = els.petWidget.getBoundingClientRect();
+  return {
+    left: Math.max(margin, Math.min(left, window.innerWidth - rect.width - margin)),
+    top: Math.max(margin, Math.min(top, window.innerHeight - rect.height - margin)),
+  };
+}
+
+function placePet(left, top, persist = false) {
+  if (!els.petWidget) return;
+  const position = clampPetPosition(left, top);
+  els.petWidget.style.left = `${position.left}px`;
+  els.petWidget.style.top = `${position.top}px`;
+  els.petWidget.style.right = "auto";
+  els.petWidget.style.bottom = "auto";
+  if (persist) {
+    localStorage.setItem(siteConfig.storageKeys.petPosition, JSON.stringify(position));
+  }
+}
+
+function restorePetPosition() {
+  if (!els.petWidget) return;
+  const saved = readPetPosition();
+  if (saved && Number.isFinite(saved.left) && Number.isFinite(saved.top)) {
+    placePet(saved.left, saved.top);
+    return;
+  }
+  const rect = els.petWidget.getBoundingClientRect();
+  placePet(18, window.innerHeight - rect.height - 18);
+}
+
+function initPetDragging() {
+  if (!els.petWidget || !els.pixelPet) return;
+  let drag = null;
+  let suppressPetClick = false;
+
+  const beginDrag = (event) => {
+    if (event.button !== undefined && event.button !== 0) return;
+    const rect = els.petWidget.getBoundingClientRect();
+    drag = {
+      pointerId: event.pointerId,
+      offsetX: event.clientX - rect.left,
+      offsetY: event.clientY - rect.top,
+      startX: event.clientX,
+      startY: event.clientY,
+      lastX: event.clientX,
+      lastY: event.clientY,
+      moved: false,
+    };
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+    els.petWidget.classList.add("is-dragging");
+    document.body.classList.add("is-pet-dragging");
+    event.preventDefault();
+  };
+
+  const moveDrag = (event) => {
+    if (!drag || event.pointerId !== drag.pointerId) return;
+    if (event.clientX === 0 && event.clientY === 0 && drag.moved) return;
+    const distance = Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY);
+    if (distance > 5) {
+      drag.moved = true;
+      const horizontalDelta = event.clientX - drag.lastX;
+      if (Math.abs(horizontalDelta) > 1.5) {
+        els.pixelPet.classList.toggle("is-facing-left", horizontalDelta < 0);
+      }
+      setPetVisualState("walk");
+    }
+    drag.lastX = event.clientX;
+    drag.lastY = event.clientY;
+    placePet(event.clientX - drag.offsetX, event.clientY - drag.offsetY);
+  };
+
+  const endDrag = (event) => {
+    if (!drag || event.pointerId !== drag.pointerId) return;
+    const wasMoved = drag.moved;
+    drag = null;
+    els.petWidget.classList.remove("is-dragging");
+    document.body.classList.remove("is-pet-dragging");
+    const rect = els.petWidget.getBoundingClientRect();
+    placePet(rect.left, rect.top, true);
+    if (wasMoved) {
+      suppressPetClick = true;
+      setPetVisualState("idle");
+      window.setTimeout(() => {
+        suppressPetClick = false;
+      }, 120);
+    }
+  };
+
+  els.pixelPet.addEventListener("pointerdown", beginDrag);
+  window.addEventListener("pointermove", moveDrag, { passive: true });
+  window.addEventListener("pointerup", endDrag);
+  window.addEventListener("pointercancel", endDrag);
+  window.addEventListener("resize", () => {
+    const rect = els.petWidget.getBoundingClientRect();
+    placePet(rect.left, rect.top, true);
+  });
+
+  els.pixelPet.addEventListener(
+    "click",
+    (event) => {
+      if (!suppressPetClick) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    },
+    true,
+  );
+}
+
+function renderPet() {
+  if (!els.pixelPet) return;
+  state.pet.mood = Math.max(0, Math.min(100, Math.round(state.pet.mood)));
+  state.pet.energy = Math.max(0, Math.min(100, Math.round(state.pet.energy)));
+  if (els.petMood) els.petMood.textContent = `心情 ${state.pet.mood}`;
+  if (els.petEnergy) els.petEnergy.textContent = `体力 ${state.pet.energy}`;
+  if (els.petLevel) els.petLevel.textContent = `Lv.${petLevel()}`;
+}
+
+function interactWithPet(action) {
+  const messages = {
+    feed: ["饱啦！代码也要一口一口写。", "曲奇补充完毕，体力上涨！"],
+    play: ["冲呀！去随机读一篇文章。", "跳跃成功，获得一点经验。"],
+    rest: ["进入省电模式，稍后再战。", "休息一下，灵感会自己走过来。"],
+    greet: ["我在这里陪你写博客。", "今天的页面也很漂亮。", "点点下面的按钮和我互动吧。"],
+  };
+
+  if (action === "feed") {
+    state.pet.energy += 13;
+    state.pet.mood += 5;
+    state.pet.exp += 8;
+  } else if (action === "play") {
+    state.pet.energy -= 9;
+    state.pet.mood += 14;
+    state.pet.exp += 12;
+    setPetVisualState("jump", 900);
+  } else if (action === "rest") {
+    state.pet.energy += 18;
+    state.pet.mood += 2;
+    state.pet.exp += 5;
+  } else {
+    state.pet.mood += 2;
+    state.pet.exp += 1;
+    setPetVisualState("wave", 900);
+  }
+
+  const pool = messages[action] || messages.greet;
+  setPetSpeech(pool[Math.floor(Math.random() * pool.length)]);
+  renderPet();
+  savePet();
+}
+
+function initPet() {
+  if (!els.petWidget) return;
+  const elapsedHours = Math.max(0, (Date.now() - Number(state.pet.updatedAt || Date.now())) / 3600000);
+  state.pet.energy -= Math.min(24, elapsedHours * 1.2);
+  state.pet.mood -= Math.min(18, elapsedHours * 0.8);
+  els.petWidget.classList.remove("is-collapsed");
+  renderPet();
+  preloadPetFrames();
+  setPetVisualState(state.pet.energy <= 15 ? "fail" : "idle");
+  savePet();
+  requestAnimationFrame(restorePetPosition);
+
+  window.clearInterval(petSpeechTimer);
+  petSpeechTimer = window.setInterval(() => {
+    if (els.petWidget.classList.contains("is-dragging")) return;
+    const states = state.pet.energy <= 15 ? ["fail", "wait"] : ["idle", "wait", "review"];
+    setPetVisualState(states[Math.floor(Math.random() * states.length)], 2600);
+  }, 9000);
 }
 
 function refreshIcons() {
@@ -1346,7 +1914,6 @@ function handleNavAction(action) {
     search: () => openPalette(),
     random: () => randomPost(),
     theme: () => setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark"),
-    wallpaper: () => cycleWallpaper(),
     "sort-liked": () => setSort("liked"),
     "sort-popular": () => setSort("popular"),
     guestbook: () => scrollToTarget("#guestbook"),
@@ -1358,7 +1925,7 @@ function handleNavAction(action) {
   };
 
   actionMap[action]?.();
-  if (!["theme", "wallpaper", "sort-liked", "sort-popular"].includes(action)) {
+  if (!["theme", "sort-liked", "sort-popular"].includes(action)) {
     closeNavMega();
     closeMobileMenu();
   }
@@ -1618,7 +2185,6 @@ function bindEvents() {
     setTheme(nextTheme);
   });
 
-  $("#wallpaperMode").addEventListener("click", cycleWallpaper);
   $("#searchOpen").addEventListener("click", openPalette);
   $("#heroSearch").addEventListener("click", openPalette);
   $("#drawerSearch").addEventListener("click", () => {
@@ -1654,6 +2220,36 @@ function bindEvents() {
     els.navMegaClose?.addEventListener("click", closeNavMega);
     els.navShield?.addEventListener("click", closeNavMega);
   }
+
+  els.musicToggle?.addEventListener("click", toggleMusic);
+  els.musicPrev?.addEventListener("click", () => selectMusicTrack(state.musicTrackIndex - 1));
+  els.musicNext?.addEventListener("click", () => selectMusicTrack(state.musicTrackIndex + 1));
+  els.musicPlaylist?.addEventListener("change", (event) => {
+    const index = musicPlaylist.findIndex((track) => track.id === event.target.value);
+    if (index >= 0) selectMusicTrack(index);
+  });
+  els.musicVolume?.addEventListener("input", (event) => setMusicVolume(event.target.value));
+  els.calendarPrev?.addEventListener("click", () => shiftCalendarMonth(-1));
+  els.calendarNext?.addEventListener("click", () => shiftCalendarMonth(1));
+  els.calendarReset?.addEventListener("click", () => {
+    state.calendarDate = new Date();
+    renderCalendar();
+  });
+  els.pixelPet?.addEventListener("click", () => {
+    interactWithPet("greet");
+  });
+  els.pixelPet?.addEventListener("dblclick", () => {
+    state.pet.mood += 4;
+    state.pet.energy -= 2;
+    state.pet.exp += 4;
+    setPetVisualState("jump", 900);
+    renderPet();
+    savePet();
+  });
+  $$("[data-pet-action]").forEach((button) => {
+    button.addEventListener("click", () => interactWithPet(button.dataset.petAction));
+  });
+  initPetDragging();
 
   $("#backToTop").addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
   $("#dialogClose").addEventListener("click", () => els.dialog.close());
@@ -1724,7 +2320,6 @@ function setReaderScale(value) {
 
 function init() {
   cacheElements();
-  document.documentElement.dataset.wallpaper = state.wallpaper;
   document.documentElement.dataset.accent = state.accent;
   els.sortSelect.value = state.sort;
   initTheme();
@@ -1736,6 +2331,11 @@ function init() {
   renderTopics();
   renderArchive();
   renderMessages();
+  renderCalendar();
+  renderMusicPlaylist();
+  setMusicVolume(state.musicVolume);
+  updateMusicUI(false);
+  initPet();
   renderNavPanel(state.activeNavPanel);
   renderMobileHub();
   bindEvents();
