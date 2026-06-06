@@ -10,19 +10,19 @@
     <title>凌云客栈 - 二次元个人博客</title>
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="assets/hero-anime.png" as="image" />
-    <link rel="stylesheet" href="assets/styles.css" />
-    <link rel="stylesheet" href="assets/anime.css" />
+    <link rel="stylesheet" href="assets/styles.css?v=20260607-6" />
+    <link rel="stylesheet" href="assets/anime.css?v=20260607-6" />
     <script defer src="assets/lucide.min.js"></script>
     <script defer src="assets/gsap.min.js"></script>
     <script defer src="assets/ScrollTrigger.min.js"></script>
-    <script defer src="assets/app.js"></script>
+    <script defer src="assets/app.js?v=20260607-6"></script>
   </head>
   <body>
     <div class="reading-progress" aria-hidden="true"></div>
 
     <div class="wallpaper-stage" aria-hidden="true">
-      <img class="wallpaper-image is-active" src="assets/hero-anime.png" alt="" />
-      <img class="wallpaper-image" src="assets/hero-anime.png" alt="" />
+      <img class="wallpaper-image is-active" src="assets/footer-morning-4k.jpg" alt="" />
+      <img class="wallpaper-image" src="assets/footer-morning-4k.jpg" alt="" />
       <div class="wallpaper-veil"></div>
     </div>
     <div class="sakura-field" aria-hidden="true">
@@ -205,15 +205,59 @@
         />
         <img class="hero-image" src="assets/hero-anime.png" alt="" />
         <div class="hero-scrim"></div>
-        <div class="floating-note note-a" aria-hidden="true">SAKURA_LOG</div>
-        <div class="floating-note note-b" aria-hidden="true">SKY_NOTE</div>
         <div class="floating-note note-c" aria-hidden="true">CODE_DIARY</div>
-        <div class="hero-time-layer" aria-live="polite">
-          <span class="time-layer-clock" id="heroClockTime">--:--:--</span>
-          <span class="time-layer-date" id="heroClockDate">--</span>
-        </div>
+        <aside class="hero-note-card" aria-live="polite">
+          <div class="note-card-head">
+            <span>
+              <i data-lucide="notebook-pen"></i>
+              今日札记
+            </span>
+            <span class="note-card-index">DAY LOG</span>
+          </div>
+          <strong id="dailyNotePhase">夜色正好</strong>
+          <p id="dailyNoteMessage">把今天学到的东西，慢慢写成明天的路标。</p>
+          <div class="note-card-foot">
+            <span id="dailyNoteDate">--</span>
+            <span><i data-lucide="sparkles"></i> 保持好奇</span>
+          </div>
+        </aside>
+        <aside class="hero-weather-card" id="heroWeather" aria-live="polite">
+          <div class="weather-card-head">
+            <span class="weather-location">
+              <i data-lucide="map-pin"></i>
+              长沙
+            </span>
+            <span class="weather-live">LIVE</span>
+          </div>
+          <div class="weather-card-main">
+            <i class="weather-main-icon" data-lucide="cloud-sun"></i>
+            <strong id="weatherTemperature">--°</strong>
+            <div>
+              <b id="weatherSummary">获取天气中</b>
+              <small id="weatherUpdated">正在连接实时天气</small>
+            </div>
+          </div>
+          <div class="weather-card-grid">
+            <span>
+              <i data-lucide="thermometer-sun"></i>
+              体感 <b id="weatherFeelsLike">--°</b>
+            </span>
+            <span>
+              <i data-lucide="droplets"></i>
+              湿度 <b id="weatherHumidity">--%</b>
+            </span>
+            <span>
+              <i data-lucide="wind"></i>
+              风速 <b id="weatherWind">-- km/h</b>
+            </span>
+          </div>
+        </aside>
         <div class="hero-content">
           <p class="kicker">ANIME / NOTES / LINGYUN INN</p>
+          <div class="hero-time-layer" aria-live="polite">
+            <span class="time-layer-clock" id="heroClockTime">--:--:--</span>
+            <span class="time-layer-date" id="heroClockDate">--</span>
+          </div>
           <h1 id="site-title">凌云客栈</h1>
           <p class="hero-copy">
             把日常与代码写进一页晴空，做一个清新、可检索、能长期生长的个人博客。
@@ -337,8 +381,21 @@
               <i data-lucide="activity"></i>
               <h2>写作脉冲</h2>
             </div>
+            <div class="pulse-summary">
+              <span><b id="pulseActiveDays">0</b> 活跃天</span>
+              <span><b id="pulseArticleCount">0</b> 篇更新</span>
+              <span><b id="pulseLatest">--</b> 最近</span>
+            </div>
             <div class="heatmap" id="heatmap" aria-label="最近写作热力图"></div>
-            <p class="muted small-copy">深浅代表最近几周的更新频率。</p>
+            <div class="pulse-legend">
+              <span>35 天前</span>
+              <span class="pulse-scale" aria-hidden="true">
+                少
+                <i data-level="0"></i><i data-level="1"></i><i data-level="2"></i><i data-level="3"></i><i data-level="4"></i>
+                多
+              </span>
+              <span>今天</span>
+            </div>
           </section>
 
           <section class="panel notice-panel">
@@ -353,33 +410,31 @@
 
           <section class="panel now-panel">
             <div class="panel-heading">
-              <i data-lucide="music-2"></i>
-              <h2>音乐</h2>
+              <i data-lucide="headphones"></i>
+              <h2>流行歌单</h2>
             </div>
-            <p class="now-title" id="musicStatus" aria-live="polite">像素电台待机中</p>
-            <p class="muted" id="musicTrack">樱花脉冲 / 柔和合成器</p>
-            <label class="music-playlist-label" for="musicPlaylist">选择曲目</label>
-            <select class="music-playlist" id="musicPlaylist" aria-label="选择音乐">
+            <p class="now-title" id="musicStatus" aria-live="polite">Spotify 官方精选</p>
+            <p class="muted" id="musicTrack">全球 Top 50 · 实时热门排行</p>
+            <label class="music-playlist-label" for="musicPlaylist">切换歌单</label>
+            <select class="music-playlist" id="musicPlaylist" aria-label="选择流行音乐歌单">
               <option>正在载入歌单</option>
             </select>
-            <div class="music-controls">
-              <button class="icon-button" id="musicPrev" type="button" title="上一首" aria-label="上一首">
-                <i data-lucide="skip-back"></i>
-              </button>
-              <button class="icon-button" id="musicToggle" type="button" title="播放音乐" aria-label="播放音乐">
-                <i data-lucide="play"></i>
-              </button>
-              <button class="icon-button" id="musicNext" type="button" title="下一首" aria-label="下一首">
-                <i data-lucide="skip-forward"></i>
-              </button>
-              <label class="music-volume">
-                <i data-lucide="volume-2"></i>
-                <input id="musicVolume" type="range" min="0" max="100" value="34" aria-label="音乐音量" />
-              </label>
-            </div>
-            <div class="equalizer" id="musicEqualizer" aria-hidden="true">
-              <span></span><span></span><span></span><span></span><span></span>
-            </div>
+            <iframe
+              class="spotify-player"
+              id="musicEmbed"
+              title="Spotify 流行音乐歌单"
+              src="https://open.spotify.com/embed/playlist/37i9dQZEVXbMDoHDwVN2tF?utm_source=generator&theme=0"
+              width="100%"
+              height="352"
+              frameborder="0"
+              allowfullscreen=""
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+            ></iframe>
+            <p class="music-source">
+              <i data-lucide="badge-check"></i>
+              Spotify 官方歌单，播放能力取决于所在地区与账户状态。
+            </p>
           </section>
 
           <section class="panel task-panel">
@@ -671,6 +726,10 @@
           <p>
             HTML + CSS + JavaScript + GSAP / 结构参考
             <a href="https://github.com/CuteLeaf/Firefly" target="_blank" rel="noreferrer">Firefly</a>
+          </p>
+          <p>
+            天气数据
+            <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a>
           </p>
         </div>
       </div>

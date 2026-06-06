@@ -9,7 +9,6 @@ const siteConfig = {
     messages: "blogMessages",
     readerScale: "readerScale",
     accent: "blogAccent",
-    musicVolume: "blogMusicVolume",
     musicTrack: "blogMusicTrack",
     pet: "blogPixelPet",
     petCollapsed: "blogPixelPetCollapsed",
@@ -365,54 +364,24 @@ const defaultMessages = [
 
 const musicPlaylist = [
   {
-    id: "sakura-pulse",
-    title: "樱花脉冲",
-    subtitle: "柔和合成器",
-    tempo: 1450,
-    waveform: "sine",
-    filter: 1400,
-    chord: [196, 246.94, 293.66],
-    melody: [392, 440, 493.88, 587.33, 493.88, 440, 369.99, 392],
+    id: "37i9dQZEVXbMDoHDwVN2tF",
+    title: "全球 Top 50",
+    subtitle: "实时热门排行",
   },
   {
-    id: "midnight-terminal",
-    title: "午夜终端",
-    subtitle: "低频电子氛围",
-    tempo: 1120,
-    waveform: "triangle",
-    filter: 980,
-    chord: [146.83, 220, 293.66],
-    melody: [293.66, 329.63, 392, 440, 392, 329.63, 277.18, 293.66],
+    id: "37i9dQZF1DXcBWIGoYBM5M",
+    title: "Today's Top Hits",
+    subtitle: "全球流行热歌",
   },
   {
-    id: "rainy-window",
-    title: "雨窗来信",
-    subtitle: "缓慢玻璃音色",
-    tempo: 1780,
-    waveform: "sine",
-    filter: 1180,
-    chord: [174.61, 220, 261.63],
-    melody: [349.23, 392, 440, 523.25, 440, 392, 329.63, 349.23],
+    id: "37i9dQZEVXbLiRSasKsNU9",
+    title: "全球 Viral 50",
+    subtitle: "正在走红的新歌",
   },
   {
-    id: "blue-hour",
-    title: "蓝调时刻",
-    subtitle: "清亮像素波",
-    tempo: 920,
-    waveform: "square",
-    filter: 1650,
-    chord: [220, 277.18, 329.63],
-    melody: [440, 554.37, 659.25, 554.37, 493.88, 440, 369.99, 415.3],
-  },
-  {
-    id: "cloud-library",
-    title: "云端图书馆",
-    subtitle: "安静阅读循环",
-    tempo: 1560,
-    waveform: "triangle",
-    filter: 1280,
-    chord: [164.81, 207.65, 246.94],
-    melody: [329.63, 369.99, 415.3, 493.88, 415.3, 369.99, 311.13, 329.63],
+    id: "37i9dQZF1DWUa8ZRTfalHk",
+    title: "Pop Rising",
+    subtitle: "流行新声精选",
   },
 ];
 
@@ -430,7 +399,6 @@ const state = {
   navTrigger: null,
   activeNavPanel: "articles",
   accent: localStorage.getItem(siteConfig.storageKeys.accent) || "rose",
-  musicVolume: Number(localStorage.getItem(siteConfig.storageKeys.musicVolume)) || 34,
   musicTrackIndex: Math.max(
     0,
     musicPlaylist.findIndex(
@@ -448,26 +416,37 @@ const state = {
 };
 
 let els = {};
-let musicEngine = null;
 let petSpeechTimer = null;
 let petVisualTimer = null;
 let activeTimePhase = null;
+let weatherRefreshTimer = null;
+
+const weatherConfig = {
+  latitude: 28.2282,
+  longitude: 112.9388,
+  location: "长沙",
+  refreshMs: 15 * 60 * 1000,
+};
 
 const timePhaseAssets = {
   morning: {
     src: "assets/hero-morning.png",
+    pageSrc: "assets/footer-morning-4k.jpg",
     alt: "清晨阳光下的动漫风格屋顶书桌与城市天际线",
   },
   day: {
     src: "assets/hero-anime.png",
+    pageSrc: "assets/footer-day-4k.jpg",
     alt: "晴朗白昼中的动漫风格屋顶书桌与城市天际线",
   },
   dusk: {
     src: "assets/hero-dusk.png",
+    pageSrc: "assets/footer-dusk-4k.jpg",
     alt: "夕阳映照下的动漫风格屋顶书桌与城市天际线",
   },
   night: {
     src: "assets/hero-night.png",
+    pageSrc: "assets/footer-night-4k.jpg",
     alt: "月夜灯光下的动漫风格屋顶书桌与城市天际线",
   },
 };
@@ -545,6 +524,9 @@ function cacheElements() {
     topicGrid: $("#topicGrid"),
     archiveList: $("#archiveList"),
     heatmap: $("#heatmap"),
+    pulseActiveDays: $("#pulseActiveDays"),
+    pulseArticleCount: $("#pulseArticleCount"),
+    pulseLatest: $("#pulseLatest"),
     dialog: $("#postDialog"),
     dialogBody: $("#dialogBody"),
     searchPalette: $("#searchPalette"),
@@ -561,16 +543,22 @@ function cacheElements() {
     navIndicator: $("#navIndicator"),
     heroClockTime: $("#heroClockTime"),
     heroClockDate: $("#heroClockDate"),
+    dailyNotePhase: $("#dailyNotePhase"),
+    dailyNoteMessage: $("#dailyNoteMessage"),
+    dailyNoteDate: $("#dailyNoteDate"),
+    weatherTemperature: $("#weatherTemperature"),
+    weatherSummary: $("#weatherSummary"),
+    weatherUpdated: $("#weatherUpdated"),
+    weatherFeelsLike: $("#weatherFeelsLike"),
+    weatherHumidity: $("#weatherHumidity"),
+    weatherWind: $("#weatherWind"),
+    weatherIcon: $("#heroWeather .weather-main-icon"),
     heroImages: $$(".hero-image"),
     wallpaperImages: $$(".wallpaper-image"),
     musicStatus: $("#musicStatus"),
     musicTrack: $("#musicTrack"),
     musicPlaylist: $("#musicPlaylist"),
-    musicPrev: $("#musicPrev"),
-    musicToggle: $("#musicToggle"),
-    musicNext: $("#musicNext"),
-    musicVolume: $("#musicVolume"),
-    musicEqualizer: $("#musicEqualizer"),
+    musicEmbed: $("#musicEmbed"),
     calendarTitle: $("#calendarTitle"),
     calendarToday: $("#calendarToday"),
     miniCalendar: $("#miniCalendar"),
@@ -779,16 +767,40 @@ function renderArchive() {
 }
 
 function renderHeatmap() {
-  const levels = [0, 1, 0, 2, 3, 1, 4, 0, 2, 1, 3, 0, 4, 2, 1, 0, 2, 3, 4, 1, 0, 2, 2, 4, 1, 3, 0, 2, 1, 4, 3, 0, 2, 1, 3];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const postsByDate = posts.reduce((map, post) => {
+    map.set(post.date, (map.get(post.date) || 0) + 1);
+    return map;
+  }, new Map());
+  const days = Array.from({ length: 35 }, (_, index) => {
+    const date = new Date(today);
+    date.setDate(today.getDate() - (34 - index));
+    const iso = formatLocalDate(date);
+    const count = postsByDate.get(iso) || 0;
+    return { date, iso, count, level: count === 0 ? 0 : Math.min(4, count * 2) };
+  });
+  const activeDays = days.filter((day) => day.count > 0);
+  const articleCount = activeDays.reduce((sum, day) => sum + day.count, 0);
+  const latest = [...activeDays].reverse()[0];
+
   els.heatmap.replaceChildren(
-    ...levels.map((level, index) => {
-      const cell = document.createElement("span");
+    ...days.map((day) => {
+      const cell = document.createElement("time");
       cell.className = "heat-cell";
-      cell.dataset.level = String(level);
-      cell.title = `第 ${index + 1} 天，写作强度 ${level}`;
+      cell.dateTime = day.iso;
+      cell.dataset.level = String(day.level);
+      cell.title = day.count ? `${day.iso}：发布 ${day.count} 篇文章` : `${day.iso}：暂无更新`;
       return cell;
     }),
   );
+  els.pulseActiveDays.textContent = String(activeDays.length);
+  els.pulseArticleCount.textContent = String(articleCount);
+  els.pulseLatest.textContent = latest
+    ? new Intl.DateTimeFormat("zh-CN", { month: "2-digit", day: "2-digit" })
+        .format(latest.date)
+        .replace(/\//g, ".")
+    : "--";
 }
 
 function renderStats() {
@@ -1243,13 +1255,24 @@ function updateHeroClock() {
     second: "2-digit",
     hour12: false,
   }).format(now);
-  els.heroClockDate.textContent = new Intl.DateTimeFormat("zh-CN", {
+  const formattedDate = new Intl.DateTimeFormat("zh-CN", {
     month: "2-digit",
     day: "2-digit",
     weekday: "short",
   })
     .format(now)
     .replace(/\//g, ".");
+  els.heroClockDate.textContent = formattedDate;
+  els.dailyNoteDate.textContent = formattedDate;
+  const dailyNotes = {
+    morning: ["晨光初醒", "先整理思绪，再把今天最重要的一件事写下来。"],
+    day: ["晴昼进行时", "专注解决眼前的问题，也给偶然冒出的灵感留个位置。"],
+    dusk: ["晚霞收笔", "回看今天走过的路，把还没想清楚的部分留给明天。"],
+    night: ["夜色正好", "把今天学到的东西，慢慢写成明天的路标。"],
+  };
+  const [notePhase, noteMessage] = dailyNotes[phase.key];
+  els.dailyNotePhase.textContent = notePhase;
+  els.dailyNoteMessage.textContent = noteMessage;
   applyTimePhase(phase.key);
 }
 
@@ -1299,103 +1322,68 @@ function applyTimePhase(phaseKey) {
 
   document.documentElement.dataset.timePhase = phaseKey;
   swapTimedImage(els.heroImages, asset);
-  swapTimedImage(els.wallpaperImages, asset, true);
+  swapTimedImage(els.wallpaperImages, { src: asset.pageSrc }, true);
   activeTimePhase = phaseKey;
 }
 
-function createMusicEngine(track = musicPlaylist[state.musicTrackIndex]) {
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
-  if (!AudioContext) return null;
+function describeWeather(code) {
+  if (code === 0) return { type: "clear", label: "晴朗", icon: "sun" };
+  if ([1, 2].includes(code)) return { type: "cloudy", label: "晴间多云", icon: "cloud-sun" };
+  if (code === 3) return { type: "cloudy", label: "阴天", icon: "cloud" };
+  if ([45, 48].includes(code)) return { type: "fog", label: "有雾", icon: "cloud-fog" };
+  if ([51, 53, 55, 56, 57].includes(code)) return { type: "rain", label: "毛毛雨", icon: "cloud-drizzle" };
+  if ([61, 63, 65, 66, 67, 80, 81, 82].includes(code)) {
+    return { type: "rain", label: code >= 80 ? "阵雨" : "有雨", icon: "cloud-rain" };
+  }
+  if ([71, 73, 75, 77, 85, 86].includes(code)) return { type: "snow", label: "降雪", icon: "snowflake" };
+  if ([95, 96, 99].includes(code)) return { type: "thunder", label: "雷雨", icon: "cloud-lightning" };
+  return { type: "cloudy", label: "天气变化中", icon: "cloud" };
+}
 
-  const context = new AudioContext();
-  const master = context.createGain();
-  const filter = context.createBiquadFilter();
-  master.gain.value = 0;
-  filter.type = "lowpass";
-  filter.frequency.value = track.filter;
-  filter.Q.value = 0.7;
-  filter.connect(master);
-  master.connect(context.destination);
+function applyWeather(current) {
+  const weather = describeWeather(Number(current.weather_code));
+  const temperature = Math.round(Number(current.temperature_2m));
+  els.weatherTemperature.textContent = `${temperature}°`;
+  els.weatherSummary.textContent = weather.label;
+  els.weatherUpdated.textContent = `更新于 ${new Intl.DateTimeFormat("zh-CN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(new Date())}`;
+  els.weatherFeelsLike.textContent = `${Math.round(Number(current.apparent_temperature))}°`;
+  els.weatherHumidity.textContent = `${Math.round(Number(current.relative_humidity_2m))}%`;
+  els.weatherWind.textContent = `${Math.round(Number(current.wind_speed_10m))} km/h`;
+  els.weatherIcon?.setAttribute("data-lucide", weather.icon);
+  refreshIcons();
+}
 
-  const oscillators = track.chord.map((frequency, index) => {
-    const oscillator = context.createOscillator();
-    const gain = context.createGain();
-    oscillator.type = index === 0 ? "sine" : track.waveform;
-    oscillator.frequency.value = frequency;
-    gain.gain.value = index === 0 ? 0.075 : 0.025;
-    oscillator.connect(gain);
-    gain.connect(filter);
-    oscillator.start();
-    return oscillator;
+async function updateWeather() {
+  const params = new URLSearchParams({
+    latitude: weatherConfig.latitude,
+    longitude: weatherConfig.longitude,
+    current:
+      "temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_speed_10m,is_day",
+    timezone: "Asia/Shanghai",
   });
 
-  let melodyIndex = 0;
-  const melodyTimer = window.setInterval(() => {
-    if (context.state !== "running") return;
-    const oscillator = context.createOscillator();
-    const gain = context.createGain();
-    oscillator.type = track.waveform;
-    oscillator.frequency.value = track.melody[melodyIndex % track.melody.length];
-    melodyIndex += 1;
-    gain.gain.setValueAtTime(0, context.currentTime);
-    gain.gain.linearRampToValueAtTime(0.035, context.currentTime + 0.04);
-    gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 1.1);
-    oscillator.connect(gain);
-    gain.connect(filter);
-    oscillator.start();
-    oscillator.stop(context.currentTime + 1.15);
-  }, track.tempo);
-
-  return { context, master, oscillators, melodyTimer };
-}
-
-async function toggleMusic() {
-  if (musicEngine) {
-    const engine = musicEngine;
-    musicEngine = null;
-    window.clearInterval(engine.melodyTimer);
-    engine.master.gain.cancelScheduledValues(engine.context.currentTime);
-    engine.master.gain.linearRampToValueAtTime(0, engine.context.currentTime + 0.22);
-    window.setTimeout(() => engine.context.close(), 260);
-    updateMusicUI(false);
-    return;
-  }
-
-  musicEngine = createMusicEngine(musicPlaylist[state.musicTrackIndex]);
-  if (!musicEngine) {
-    els.musicStatus.textContent = "当前浏览器不支持音频合成";
-    return;
-  }
-  setMusicVolume(state.musicVolume);
-  updateMusicUI(true);
   try {
-    await musicEngine.context.resume();
+    const response = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
+    if (!response.ok) throw new Error(`Weather request failed: ${response.status}`);
+    const data = await response.json();
+    if (!data.current) throw new Error("Weather response has no current conditions.");
+    applyWeather(data.current);
   } catch {
-    els.musicStatus.textContent = "点击播放以启用音频";
+    els.weatherTemperature.textContent = "--°";
+    els.weatherSummary.textContent = "天气暂不可用";
+    els.weatherUpdated.textContent = "稍后自动重试";
   }
 }
 
-function setMusicVolume(value) {
-  state.musicVolume = Math.max(0, Math.min(100, Number(value)));
-  localStorage.setItem(siteConfig.storageKeys.musicVolume, String(state.musicVolume));
-  if (els.musicVolume) els.musicVolume.value = String(state.musicVolume);
-  if (!musicEngine) return;
-  const target = (state.musicVolume / 100) * 0.34;
-  musicEngine.master.gain.cancelScheduledValues(musicEngine.context.currentTime);
-  musicEngine.master.gain.linearRampToValueAtTime(target, musicEngine.context.currentTime + 0.12);
-}
-
-function updateMusicUI(isPlaying) {
-  if (!els.musicToggle) return;
+function updateMusicUI() {
   const track = musicPlaylist[state.musicTrackIndex];
-  els.musicStatus.textContent = isPlaying ? "正在播放" : "歌单已暂停";
-  els.musicTrack.textContent = `${track.title} / ${track.subtitle}`;
+  els.musicStatus.textContent = "Spotify 官方精选";
+  els.musicTrack.textContent = `${track.title} · ${track.subtitle}`;
   if (els.musicPlaylist) els.musicPlaylist.value = track.id;
-  els.musicToggle.title = isPlaying ? "暂停音乐" : "播放音乐";
-  els.musicToggle.setAttribute("aria-label", els.musicToggle.title);
-  els.musicToggle.innerHTML = `<i data-lucide="${isPlaying ? "pause" : "play"}"></i>`;
-  els.musicEqualizer.classList.toggle("is-playing", isPlaying);
-  refreshIcons();
 }
 
 function renderMusicPlaylist() {
@@ -1409,30 +1397,19 @@ function renderMusicPlaylist() {
     }),
   );
   els.musicPlaylist.value = musicPlaylist[state.musicTrackIndex].id;
+  const track = musicPlaylist[state.musicTrackIndex];
+  els.musicEmbed.src = `https://open.spotify.com/embed/playlist/${track.id}?utm_source=generator&theme=0`;
+  els.musicEmbed.title = `Spotify 歌单：${track.title}`;
+  updateMusicUI();
 }
 
-async function selectMusicTrack(index) {
-  const wasPlaying = Boolean(musicEngine);
+function selectMusicTrack(index) {
   state.musicTrackIndex = (index + musicPlaylist.length) % musicPlaylist.length;
   const track = musicPlaylist[state.musicTrackIndex];
   localStorage.setItem(siteConfig.storageKeys.musicTrack, track.id);
-
-  if (wasPlaying) {
-    const engine = musicEngine;
-    musicEngine = null;
-    window.clearInterval(engine.melodyTimer);
-    engine.master.gain.cancelScheduledValues(engine.context.currentTime);
-    engine.master.gain.linearRampToValueAtTime(0, engine.context.currentTime + 0.12);
-    window.setTimeout(() => engine.context.close(), 150);
-    musicEngine = createMusicEngine(track);
-    setMusicVolume(state.musicVolume);
-    try {
-      await musicEngine.context.resume();
-    } catch {
-      els.musicStatus.textContent = "点击播放以启用音频";
-    }
-  }
-  updateMusicUI(wasPlaying);
+  els.musicEmbed.src = `https://open.spotify.com/embed/playlist/${track.id}?utm_source=generator&theme=0`;
+  els.musicEmbed.title = `Spotify 歌单：${track.title}`;
+  updateMusicUI();
 }
 
 function formatLocalDate(date) {
@@ -2019,7 +1996,8 @@ function initAnimations() {
     .from(".brand", { autoAlpha: 0, y: -12, duration: 0.42 })
     .from(".main-nav", { autoAlpha: 0, y: -12, duration: 0.42 }, "<0.08")
     .from(".header-actions", { autoAlpha: 0, duration: 0.34 }, "<")
-    .from(".hero .kicker, .hero h1, .hero-copy, .hero-actions > *", { autoAlpha: 0, y: 32, stagger: 0.08 }, "-=0.15")
+    .from(".hero-note-card, .hero-weather-card", { autoAlpha: 0, y: -14, stagger: 0.08, duration: 0.46 }, "<0.06")
+    .from(".hero .kicker, .hero-time-layer, .hero h1, .hero-copy, .hero-actions > *", { autoAlpha: 0, y: 32, stagger: 0.08 }, "-=0.15")
     .from(".hero-dock > div", { autoAlpha: 0, y: 20, stagger: 0.07 }, "-=0.3")
     .from(".quick-card", { autoAlpha: 0, y: 22, stagger: 0.045, duration: 0.38, immediateRender: false }, "-=0.62");
 
@@ -2221,14 +2199,10 @@ function bindEvents() {
     els.navShield?.addEventListener("click", closeNavMega);
   }
 
-  els.musicToggle?.addEventListener("click", toggleMusic);
-  els.musicPrev?.addEventListener("click", () => selectMusicTrack(state.musicTrackIndex - 1));
-  els.musicNext?.addEventListener("click", () => selectMusicTrack(state.musicTrackIndex + 1));
   els.musicPlaylist?.addEventListener("change", (event) => {
     const index = musicPlaylist.findIndex((track) => track.id === event.target.value);
     if (index >= 0) selectMusicTrack(index);
   });
-  els.musicVolume?.addEventListener("input", (event) => setMusicVolume(event.target.value));
   els.calendarPrev?.addEventListener("click", () => shiftCalendarMonth(-1));
   els.calendarNext?.addEventListener("click", () => shiftCalendarMonth(1));
   els.calendarReset?.addEventListener("click", () => {
@@ -2333,8 +2307,6 @@ function init() {
   renderMessages();
   renderCalendar();
   renderMusicPlaylist();
-  setMusicVolume(state.musicVolume);
-  updateMusicUI(false);
   initPet();
   renderNavPanel(state.activeNavPanel);
   renderMobileHub();
@@ -2343,6 +2315,9 @@ function init() {
   updateProgress();
   updateHeroClock();
   window.setInterval(updateHeroClock, 1000);
+  updateWeather();
+  window.clearInterval(weatherRefreshTimer);
+  weatherRefreshTimer = window.setInterval(updateWeather, weatherConfig.refreshMs);
   refreshIcons();
   initAnimations();
   refreshScrollTriggers();
