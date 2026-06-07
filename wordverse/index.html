@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="可旋转探索的 3D 英语 3500 词宇宙。" />
+    <title>3D 单词宇宙 · 英语 3500 词</title>
+    <link rel="stylesheet" href="wordverse.css?v=20260608-5" />
+    <script defer src="wordverse.js?v=20260608-17"></script>
+  </head>
+  <body>
+    <canvas id="universe" aria-label="可拖动旋转的 3D 英语单词宇宙"></canvas>
+    <div class="space-vignette" aria-hidden="true"></div>
+
+    <header class="hud">
+      <div class="hud-brand">
+        <span class="hud-dot"></span>
+        <strong>VOCABULARY UNIVERSE</strong>
+        <small>3500 CORE WORDS</small>
+      </div>
+      <div class="hud-status">
+        <span id="viewStatus">FREE VIEW</span>
+        <i></i>
+        <span id="zoomStatus">100%</span>
+        <i></i>
+        <span id="learnedStatus">0 / 1100 LIT</span>
+      </div>
+    </header>
+
+    <div class="drag-guide" id="dragGuide">
+      <span class="drag-arrows">←</span>
+      <p>按住拖动，旋转整个宇宙</p>
+      <span class="drag-arrows">→</span>
+    </div>
+
+    <div class="corner-note">
+      <span>3500 WORDS ONLINE</span>
+      <span>DRAG TO ROTATE · WHEEL TO ZOOM</span>
+    </div>
+
+    <aside class="word-card" id="wordCard" aria-hidden="true">
+      <button class="card-close" id="cardClose" type="button" aria-label="关闭">×</button>
+      <span class="star-code" id="starCode">STAR 0742</span>
+      <div class="word-heading">
+        <div>
+          <h1 id="wordTitle">explore</h1>
+          <p id="wordPhonetic">/ɪkˈsplɔː(r)/</p>
+        </div>
+        <button class="speak-button" id="speakButton" type="button" aria-label="朗读">◖))</button>
+      </div>
+      <div class="word-meta">
+        <span id="wordType">v.</span>
+        <span>高考核心</span>
+      </div>
+      <p class="word-meaning" id="wordMeaning">探索；探测；仔细研究</p>
+      <div class="word-example">
+        <small>EXAMPLE</small>
+        <p id="wordExample">We use language to explore the world and understand each other.</p>
+        <span id="wordTranslation">我们用语言探索世界，也理解彼此。</span>
+      </div>
+      <button class="learn-button" id="learnButton" type="button">
+        <span class="learn-spark">✦</span>
+        <span id="learnButtonText">完成学习 · 点亮星球</span>
+      </button>
+    </aside>
+
+    <div class="loading" id="loading">
+      <span></span>
+      <p>BUILDING WORD GALAXY</p>
+    </div>
+  </body>
+</html>
