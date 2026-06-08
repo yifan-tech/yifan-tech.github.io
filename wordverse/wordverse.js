@@ -40,6 +40,8 @@ let links = [];
 let backgroundStars = [];
 let galaxies = [];
 let deepSpaceDust = [];
+let nebulaClouds = [];
+let nebulaSprites = [];
 
 function random(seed) {
   const value = Math.sin(seed * 923.17) * 43758.5453;
@@ -85,10 +87,84 @@ function planetSignature(planet) {
   ].join(":");
 }
 
+function createCloudLanes(count) {
+  return Array.from({ length: count }, (_, index) => ({
+    start: {
+      x: (random(index + 40000) - 0.5) * 6100,
+      y: (random(index + 41000) - 0.5) * 4100,
+      z: (random(index + 42000) - 0.5) * 6100,
+    },
+    end: {
+      x: (random(index + 43000) - 0.5) * 6100,
+      y: (random(index + 44000) - 0.5) * 4100,
+      z: (random(index + 45000) - 0.5) * 6100,
+    },
+    phaseA: random(index + 46000) * Math.PI * 2,
+    phaseB: random(index + 47000) * Math.PI * 2,
+    bend: 420 + random(index + 48000) * 760,
+    hue: 178 + Math.floor(random(index + 49000) * 94),
+  }));
+}
+
+function cloudLanePoint(lane, progress, seed) {
+  const waveA = Math.sin(progress * Math.PI * 2.2 + lane.phaseA);
+  const waveB = Math.cos(progress * Math.PI * 1.7 + lane.phaseB);
+  const envelope = Math.sin(progress * Math.PI);
+  return {
+    x:
+      lane.start.x +
+      (lane.end.x - lane.start.x) * progress +
+      waveA * lane.bend * envelope +
+      (random(seed + 1) - 0.5) * 280,
+    y:
+      lane.start.y +
+      (lane.end.y - lane.start.y) * progress +
+      waveB * lane.bend * 0.75 * envelope +
+      (random(seed + 2) - 0.5) * 360,
+    z:
+      lane.start.z +
+      (lane.end.z - lane.start.z) * progress +
+      (waveA - waveB) * lane.bend * 0.62 * envelope +
+      (random(seed + 3) - 0.5) * 320,
+  };
+}
+
+function createNebulaSprites() {
+  return Array.from({ length: 10 }, (_, spriteIndex) => {
+    const sprite = document.createElement("canvas");
+    const size = 256;
+    const spriteCtx = sprite.getContext("2d");
+    const hue = 176 + spriteIndex * 9;
+    sprite.width = size;
+    sprite.height = size;
+    spriteCtx.globalCompositeOperation = "screen";
+
+    for (let lobe = 0; lobe < 7; lobe += 1) {
+      const angle = random(spriteIndex * 31 + lobe + 61000) * Math.PI * 2;
+      const distance = random(spriteIndex * 37 + lobe + 62000) * 42;
+      const x = size * 0.5 + Math.cos(angle) * distance;
+      const y = size * 0.5 + Math.sin(angle) * distance * 0.72;
+      const radius = 48 + random(spriteIndex * 41 + lobe + 63000) * 56;
+      const gradient = spriteCtx.createRadialGradient(x, y, 0, x, y, radius);
+      gradient.addColorStop(0, `hsla(${hue + lobe * 3}, 86%, 78%, 0.34)`);
+      gradient.addColorStop(0.38, `hsla(${hue + 18}, 76%, 54%, 0.16)`);
+      gradient.addColorStop(0.74, `hsla(${hue - 14}, 66%, 34%, 0.055)`);
+      gradient.addColorStop(1, `hsla(${hue}, 70%, 24%, 0)`);
+      spriteCtx.fillStyle = gradient;
+      spriteCtx.beginPath();
+      spriteCtx.arc(x, y, radius, 0, Math.PI * 2);
+      spriteCtx.fill();
+    }
+
+    return sprite;
+  });
+}
+
 function buildGalaxy() {
   const count = vocabulary.length;
   const usedPlanetSignatures = new Set();
   const galaxyMap = new Map();
+  if (!nebulaSprites.length) nebulaSprites = createNebulaSprites();
 
   vocabulary.forEach((wordData, index) => {
     const root = wordData[4] || wordData[0];
@@ -97,27 +173,25 @@ function buildGalaxy() {
   });
 
   const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+  const cloudLanes = createCloudLanes(17);
+  const galaxiesPerLane = Math.ceil(galaxyMap.size / cloudLanes.length);
   galaxies = [...galaxyMap.entries()].map(([root, members], index, all) => {
-    const progress = (index + 0.5) / all.length;
-    const arm = index % 6;
-    const radius = 180 + Math.pow(progress, 0.62) * 2500;
-    const armAngle = arm * (Math.PI * 2 / 6);
-    const angle = armAngle + radius * 0.0046 + (random(index + 23000) - 0.5) * 0.72;
-    const radialScatter = (random(index + 24000) - 0.5) * (100 + radius * 0.13);
-    const actualRadius = radius + radialScatter;
-    const diskThickness = 45 + radius * 0.085;
-    const isHaloGalaxy = index % 31 === 0;
+    const laneIndex = index % cloudLanes.length;
+    const lanePosition = Math.floor(index / cloudLanes.length);
+    const progress = (lanePosition + 0.5) / galaxiesPerLane;
+    const lane = cloudLanes[laneIndex];
+    const point = cloudLanePoint(lane, progress, index + 50000);
     const familyRadius = members.length > 1 ? 34 + Math.sqrt(members.length) * 19 : 0;
 
     return {
       id: index,
       root,
       members,
-      x: Math.cos(angle) * actualRadius,
-      y: (random(index + 25000) - 0.5) * diskThickness * (isHaloGalaxy ? 5.2 : 1),
-      z: Math.sin(angle) * actualRadius,
+      x: point.x,
+      y: point.y,
+      z: point.z,
       radius: familyRadius,
-      hue: Math.floor(random(index + 26000) * 360),
+      hue: (lane.hue + Math.floor((random(index + 26000) - 0.5) * 52) + 360) % 360,
       visible: false,
       sx: 0,
       sy: 0,
@@ -200,26 +274,48 @@ function buildGalaxy() {
     size: 0.3 + random(index + 16000) * 1.25,
     alpha: 0.12 + random(index + 18000) * 0.62,
   }));
-  deepSpaceDust = Array.from({ length: state.width < 700 ? 360 : 760 }, (_, index) => {
-    const radius = 300 + Math.pow(random(index + 30000), 0.58) * 3300;
-    const arm = index % 6;
-    const angle =
-      arm * (Math.PI * 2 / 6) +
-      radius * 0.0046 +
-      (random(index + 31000) - 0.5) * 1.15;
+  deepSpaceDust = Array.from({ length: state.width < 700 ? 420 : 900 }, (_, index) => {
+    const laneIndex = index % cloudLanes.length;
+    const lanePosition = Math.floor(index / cloudLanes.length);
+    const pointsPerLane = Math.ceil((state.width < 700 ? 420 : 900) / cloudLanes.length);
+    const progress = (lanePosition + random(index + 30000)) / pointsPerLane;
+    const lane = cloudLanes[laneIndex];
+    const point = cloudLanePoint(lane, progress, index + 51000);
     return {
-      x: Math.cos(angle) * radius,
-      y: (random(index + 32000) - 0.5) * (80 + radius * 0.12),
-      z: Math.sin(angle) * radius,
+      x: point.x + (random(index + 32000) - 0.5) * 620,
+      y: point.y + (random(index + 32500) - 0.5) * 620,
+      z: point.z + (random(index + 32750) - 0.5) * 620,
       size: 0.35 + random(index + 33000) * 1.4,
       alpha: 0.06 + random(index + 34000) * 0.28,
-      hue: 185 + Math.floor(random(index + 35000) * 58),
+      hue: lane.hue + Math.floor((random(index + 35000) - 0.5) * 34),
+    };
+  });
+  const nebulaCloudCount = state.width < 700 ? 108 : 196;
+  nebulaClouds = Array.from({ length: nebulaCloudCount }, (_, index) => {
+    const laneIndex = index % cloudLanes.length;
+    const lanePosition = Math.floor(index / cloudLanes.length);
+    const cloudsPerLane = Math.ceil(nebulaCloudCount / cloudLanes.length);
+    const progress = (lanePosition + 0.22 + random(index + 52000) * 0.56) / cloudsPerLane;
+    const lane = cloudLanes[laneIndex];
+    const point = cloudLanePoint(lane, progress, index + 53000);
+    return {
+      x: point.x + (random(index + 54000) - 0.5) * 560,
+      y: point.y + (random(index + 55000) - 0.5) * 560,
+      z: point.z + (random(index + 56000) - 0.5) * 560,
+      radius: 180 + random(index + 57000) * 430,
+      stretch: 0.52 + random(index + 58000) * 0.68,
+      alpha: 0.19 + random(index + 59000) * 0.23,
+      hue: lane.hue + Math.floor((random(index + 60000) - 0.5) * 42),
+      rotation: random(index + 60500) * Math.PI,
+      sprite: Math.floor(random(index + 60750) * nebulaSprites.length),
     };
   });
   canvas.dataset.planetCount = String(stars.length);
   canvas.dataset.uniquePlanetCount = String(usedPlanetSignatures.size);
   canvas.dataset.galaxyCount = String(galaxies.length);
   canvas.dataset.familyGalaxyCount = String(galaxies.filter((galaxy) => galaxy.members.length > 1).length);
+  canvas.dataset.cloudCount = String(nebulaClouds.length);
+  canvas.dataset.spatialModel = "volumetric-cloud-field";
   const largestGalaxy = galaxies.reduce(
     (largest, galaxy) => galaxy.members.length > largest.members.length ? galaxy : largest,
     galaxies[0]
@@ -332,6 +428,40 @@ function drawDeepSpaceDust() {
     ctx.arc(projected.x, projected.y, Math.max(0.22, dust.size * projected.scale), 0, Math.PI * 2);
     ctx.fill();
   });
+}
+
+function drawNebulaClouds() {
+  const visibleClouds = nebulaClouds
+    .map((cloud) => {
+      const rotated = rotate(cloud);
+      const projected = project(rotated);
+      return projected ? { cloud, rotated, projected } : null;
+    })
+    .filter(Boolean)
+    .sort((left, right) => right.projected.depth - left.projected.depth);
+
+  ctx.save();
+  ctx.globalCompositeOperation = "screen";
+  visibleClouds.forEach(({ cloud, projected }) => {
+    const radius = cloud.radius * projected.scale;
+    if (radius < 12) return;
+    if (
+      projected.x < -radius ||
+      projected.x > state.width + radius ||
+      projected.y < -radius ||
+      projected.y > state.height + radius
+    ) return;
+
+    const depthAlpha = Math.max(0.22, Math.min(1, projected.scale * 2.2));
+    ctx.save();
+    ctx.translate(projected.x, projected.y);
+    ctx.rotate(cloud.rotation);
+    ctx.scale(1, cloud.stretch);
+    ctx.globalAlpha = cloud.alpha * depthAlpha * (1 - state.focusAmount * 0.52);
+    ctx.drawImage(nebulaSprites[cloud.sprite], -radius, -radius, radius * 2, radius * 2);
+    ctx.restore();
+  });
+  ctx.restore();
 }
 
 function drawGalaxies() {
@@ -649,6 +779,7 @@ function animate(time = 0) {
   state.rotation.y += (state.targetRotation.y - state.rotation.y) * 0.17;
 
   drawBackground();
+  drawNebulaClouds();
   drawDeepSpaceDust();
   drawGalaxies();
   stars.forEach((star) => {
