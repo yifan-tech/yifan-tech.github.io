@@ -1,105 +1,19 @@
 const canvas = document.querySelector("#universe");
 const ctx = canvas.getContext("2d");
 
-const vocabulary = [
-  ["explore", "/ɪkˈsplɔː(r)/", "v.", "探索；探测；仔细研究", "We use language to explore the world and understand each other.", "我们用语言探索世界，也理解彼此。"],
-  ["achieve", "/əˈtʃiːv/", "v.", "达到；完成；成功", "Small steps help us achieve a much bigger dream.", "微小的步伐帮助我们实现更大的梦想。"],
-  ["ancient", "/ˈeɪnʃənt/", "adj.", "古代的；古老的", "The ancient stars still shine above our heads.", "古老的星辰依然在我们头顶闪耀。"],
-  ["approach", "/əˈprəʊtʃ/", "v. / n.", "接近；方法；途径", "Try a different approach when the old one fails.", "旧方法失效时，试试另一种途径。"],
-  ["brilliant", "/ˈbrɪliənt/", "adj.", "杰出的；灿烂的", "A brilliant idea can appear in a quiet moment.", "出色的想法可能诞生于安静的时刻。"],
-  ["challenge", "/ˈtʃælɪndʒ/", "n. / v.", "挑战；向……挑战", "Every new word is a challenge worth accepting.", "每个新单词都是值得接受的挑战。"],
-  ["curious", "/ˈkjʊəriəs/", "adj.", "好奇的；求知欲强的", "Stay curious about everything you do not know.", "对所有未知之事保持好奇。"],
-  ["discover", "/dɪˈskʌvə(r)/", "v.", "发现；发觉", "You may discover a new world inside a book.", "你也许会在书中发现一个新世界。"],
-  ["essential", "/ɪˈsenʃl/", "adj.", "必不可少的；本质的", "Patience is essential for lasting progress.", "耐心是持久进步所必需的。"],
-  ["gravity", "/ˈɡrævəti/", "n.", "重力；严重性", "Gravity keeps every planet in its orbit.", "重力让每颗行星维持在轨道上。"],
-  ["imagine", "/ɪˈmædʒɪn/", "v.", "想象；设想", "Imagine the person you will become next year.", "想象一下明年的你会成为怎样的人。"],
-  ["inspire", "/ɪnˈspaɪə(r)/", "v.", "鼓舞；启发", "Great teachers inspire us to keep asking why.", "优秀的老师鼓励我们不断追问为什么。"],
-  ["knowledge", "/ˈnɒlɪdʒ/", "n.", "知识；学问", "Knowledge grows when it is shared with others.", "知识在分享中增长。"],
-  ["observe", "/əbˈzɜːv/", "v.", "观察；注意到；遵守", "Observe the pattern before you make a choice.", "作出选择前先观察规律。"],
-  ["possibility", "/ˌpɒsəˈbɪləti/", "n.", "可能；可能性", "Each decision opens a new possibility.", "每个决定都会开启一种新的可能。"],
-  ["remarkable", "/rɪˈmɑːkəbl/", "adj.", "非凡的；显著的", "Her progress in one month was remarkable.", "她一个月内的进步非常显著。"],
-  ["transform", "/trænsˈfɔːm/", "v.", "改变；使转化", "Daily practice can transform your ability.", "每日练习能够改变你的能力。"],
-  ["universe", "/ˈjuːnɪvɜːs/", "n.", "宇宙；天地万物", "Language is a universe waiting to be explored.", "语言是一个等待探索的宇宙。"],
-  ["wander", "/ˈwɒndə(r)/", "v.", "漫游；徘徊；走神", "Let your mind wander among the stars.", "让你的思绪在群星间漫游。"],
-  ["wisdom", "/ˈwɪzdəm/", "n.", "智慧；明智", "Wisdom begins with knowing what you do not know.", "智慧始于知道自己的无知。"],
-  ["abandon", "/əˈbændən/", "v.", "放弃；抛弃", "Never abandon a goal because progress feels slow.", "不要因为进步缓慢就放弃目标。"],
-  ["balance", "/ˈbæləns/", "n. / v.", "平衡；使平衡", "Find a balance between study and rest.", "在学习与休息间找到平衡。"],
-  ["contrast", "/ˈkɒntrɑːst/", "n. / v.", "对比；形成对照", "The bright star contrasts with the dark sky.", "明亮的星星与暗夜形成对比。"],
-  ["destination", "/ˌdestɪˈneɪʃn/", "n.", "目的地；终点", "Learning is a journey, not a destination.", "学习是一段旅程，而非一个终点。"],
-  ["evidence", "/ˈevɪdəns/", "n.", "证据；证明", "Look for evidence before reaching a conclusion.", "下结论前先寻找证据。"],
-  ["frequent", "/ˈfriːkwənt/", "adj.", "频繁的；经常发生的", "Frequent review makes memory stronger.", "经常复习能让记忆更牢固。"],
-  ["generate", "/ˈdʒenəreɪt/", "v.", "产生；引起", "Questions generate more ideas than answers.", "问题比答案更能产生新想法。"],
-  ["horizon", "/həˈraɪzn/", "n.", "地平线；眼界", "A pale light appeared on the horizon.", "地平线上出现了一线微光。"],
-  ["independent", "/ˌɪndɪˈpendənt/", "adj.", "独立的；自主的", "Independent thinking takes courage.", "独立思考需要勇气。"],
-  ["journey", "/ˈdʒɜːni/", "n.", "旅行；历程", "Your vocabulary journey starts with one word.", "你的词汇旅程从一个单词开始。"],
-  ["maintain", "/meɪnˈteɪn/", "v.", "维持；保养；坚持", "Maintain your focus for just ten more minutes.", "再保持十分钟专注。"],
-  ["opportunity", "/ˌɒpəˈtjuːnəti/", "n.", "机会；时机", "Every mistake is an opportunity to learn.", "每个错误都是一次学习机会。"],
-  ["accomplish", "/əˈkʌmplɪʃ/", "v.", "完成；实现", "Together we can accomplish more than we expect.", "齐心协力，我们能完成超出预期的事情。"],
-  ["attitude", "/ˈætɪtjuːd/", "n.", "态度；看法", "A positive attitude changes the way you learn.", "积极的态度会改变你的学习方式。"],
-  ["available", "/əˈveɪləbl/", "adj.", "可获得的；有空的", "More learning resources are available online.", "网上可以获得更多学习资源。"],
-  ["benefit", "/ˈbenɪfɪt/", "n. / v.", "益处；使受益", "Reading every day will benefit your writing.", "每天阅读会提升你的写作。"],
-  ["capacity", "/kəˈpæsəti/", "n.", "能力；容量", "The human brain has a remarkable capacity to learn.", "人脑拥有非凡的学习能力。"],
-  ["concentrate", "/ˈkɒnsntreɪt/", "v.", "集中；专心", "It is easier to concentrate in a quiet room.", "在安静的房间里更容易集中注意力。"],
-  ["consequence", "/ˈkɒnsɪkwəns/", "n.", "结果；后果", "Every choice has a consequence.", "每个选择都会带来结果。"],
-  ["creative", "/kriˈeɪtɪv/", "adj.", "有创造力的", "Creative thinking helps us solve difficult problems.", "创造性思维帮助我们解决难题。"],
-  ["determine", "/dɪˈtɜːmɪn/", "v.", "决定；确定", "Your habits determine much of your future.", "你的习惯在很大程度上决定未来。"],
-  ["effective", "/ɪˈfektɪv/", "adj.", "有效的；起作用的", "Regular review is an effective learning method.", "定期复习是一种有效的学习方法。"],
-  ["encounter", "/ɪnˈkaʊntə(r)/", "v. / n.", "遇到；遭遇", "You will encounter unfamiliar words while reading.", "阅读时你会遇到陌生单词。"],
-  ["environment", "/ɪnˈvaɪrənmənt/", "n.", "环境；周围状况", "A good environment makes learning easier.", "良好的环境让学习更轻松。"],
-  ["establish", "/ɪˈstæblɪʃ/", "v.", "建立；确立", "Establish a routine that you can follow every day.", "建立一个每天都能坚持的习惯。"],
-  ["eventually", "/ɪˈventʃuəli/", "adv.", "最终；终于", "Consistent effort will eventually bring results.", "持续努力最终会带来成果。"],
-  ["flexible", "/ˈfleksəbl/", "adj.", "灵活的；可变通的", "A flexible plan can adapt to unexpected changes.", "灵活的计划可以适应意外变化。"],
-  ["gradually", "/ˈɡrædʒuəli/", "adv.", "逐渐地", "Your vocabulary will gradually become larger.", "你的词汇量会逐渐扩大。"],
-  ["identity", "/aɪˈdentəti/", "n.", "身份；特征", "Language is closely connected with identity.", "语言与身份密切相关。"],
-  ["influence", "/ˈɪnfluəns/", "n. / v.", "影响；对……起作用", "Friends can strongly influence our decisions.", "朋友会强烈影响我们的决定。"],
-  ["involve", "/ɪnˈvɒlv/", "v.", "涉及；使参加", "Real learning must involve active thinking.", "真正的学习必须包含主动思考。"],
-  ["perspective", "/pəˈspektɪv/", "n.", "观点；视角", "Travel gives us a wider perspective on life.", "旅行让我们拥有更宽广的人生视角。"],
-  ["preserve", "/prɪˈzɜːv/", "v.", "保护；保存", "We should preserve valuable cultural traditions.", "我们应当保护珍贵的文化传统。"],
-  ["principle", "/ˈprɪnsəpl/", "n.", "原则；原理", "The same principle applies to language learning.", "同样的原则也适用于语言学习。"],
-  ["resource", "/rɪˈsɔːs/", "n.", "资源；资料", "Time is one of our most valuable resources.", "时间是我们最宝贵的资源之一。"],
-  ["significant", "/sɪɡˈnɪfɪkənt/", "adj.", "重要的；显著的", "Practice made a significant difference to her score.", "练习使她的成绩有了显著变化。"],
-  ["strategy", "/ˈstrætədʒi/", "n.", "策略；行动计划", "Choose a strategy that matches your learning style.", "选择符合自己学习方式的策略。"],
-  ["sufficient", "/səˈfɪʃnt/", "adj.", "足够的；充分的", "Make sure you get sufficient sleep before the exam.", "考试前要确保获得充足睡眠。"],
-  ["temporary", "/ˈtemprəri/", "adj.", "暂时的；临时的", "Failure is temporary if you keep moving forward.", "只要继续前进，失败就是暂时的。"],
-  ["valuable", "/ˈvæljuəbl/", "adj.", "宝贵的；有价值的", "Every question can lead to a valuable discovery.", "每个问题都可能带来有价值的发现。"],
-  ["variety", "/vəˈraɪəti/", "n.", "多样；种类", "Use a variety of methods to remember new words.", "使用多种方法记忆新单词。"],
-  ["visible", "/ˈvɪzəbl/", "adj.", "看得见的；明显的", "The progress became visible after several weeks.", "几周后，进步变得明显起来。"],
-  ["volunteer", "/ˌvɒlənˈtɪə(r)/", "n. / v.", "志愿者；自愿", "She volunteered to help younger students.", "她自愿帮助低年级学生。"],
-  ["worthwhile", "/ˌwɜːθˈwaɪl/", "adj.", "值得的", "Learning another language is always worthwhile.", "学习另一门语言总是值得的。"],
-];
+const vocabulary = window.WORDVERSE_VOCABULARY || [];
 
-const ambientWords = [
-  "absolute", "academic", "accurate", "adapt", "admire", "advance", "afford", "aim", "alarm", "ambition",
-  "analyse", "annual", "anxious", "appeal", "arrange", "atmosphere", "attitude", "average", "aware", "benefit",
-  "beyond", "capacity", "capture", "career", "certain", "complex", "concentrate", "conduct", "confirm", "consequence",
-  "consider", "creative", "decline", "define", "delight", "deserve", "determine", "device", "distant", "effective",
-  "emerge", "emotion", "encounter", "energy", "enormous", "establish", "eventually", "exchange", "existence", "expand",
-  "feature", "flexible", "focus", "fortunate", "function", "gradually", "guidance", "identity", "impact", "improve",
-  "include", "influence", "intend", "involve", "limit", "material", "measure", "memory", "method", "mystery",
-  "normal", "obvious", "occasion", "ordinary", "organize", "particular", "pattern", "perform", "persuade", "potential",
-  "precise", "predict", "preserve", "principle", "process", "produce", "quality", "reflect", "region", "represent",
-  "require", "resource", "respond", "responsible", "result", "significant", "solution", "specific", "structure", "suitable",
-  "survive", "theory", "therefore", "tradition", "unique", "valuable", "variety", "visible", "volunteer", "wonder",
-  "ability", "aboard", "absence", "absorb", "abstract", "access", "accompany", "account", "accumulate", "acknowledge",
-  "acquire", "addition", "adequate", "adjust", "adventure", "advertise", "advocate", "agriculture", "alternative", "amaze",
-  "announce", "anticipate", "apparent", "appreciate", "approve", "argument", "arise", "artificial", "assess", "assume",
-  "attempt", "attract", "authority", "automatic", "background", "barrier", "behavior", "belief", "belong", "broaden",
-  "calculate", "campaign", "candidate", "category", "cautious", "civilization", "combine", "comfort", "commercial", "commit",
-  "communicate", "community", "compare", "compete", "complete", "compose", "concept", "concern", "conclude", "condition",
-  "connection", "conscious", "constant", "construct", "consume", "contact", "contain", "contribute", "convenient", "convince",
-  "cooperate", "courage", "crucial", "culture", "damage", "debate", "decade", "decision", "demonstrate", "depend",
-  "describe", "design", "detail", "develop", "difference", "difficulty", "direction", "disappear", "discipline", "display",
-  "distance", "educate", "enable", "encourage", "entire", "equal", "equipment", "especially", "essentially", "estimate",
-  "evaluate", "exact", "examine", "example", "excellent", "exception", "experience", "experiment", "explain", "express",
-  "facility", "factor", "familiar", "favour", "financial", "foreign", "freedom", "fundamental", "future", "general",
-  "global", "goal", "growth", "habit", "harmful", "historic", "honest", "however", "immediate", "importance",
-  "increase", "individual", "industry", "information", "initiative", "instead", "intelligent", "interest", "international", "introduce",
-  "investigate", "language", "likely", "majority", "manage", "meaning", "mental", "natural", "necessary", "notice",
-  "objective", "obtain", "operate", "organization", "original", "participate", "patient", "personal", "physical", "positive",
-  "practical", "prepare", "present", "prevent", "primary", "professional", "progress", "provide", "purpose", "realize",
-  "recognize", "recommend", "reduce", "relationship", "reliable", "remain", "replace", "research", "respect", "similar",
-  "society", "standard", "strength", "subject", "suggest", "support", "technology", "understand", "unusual", "various"
-];
+if (vocabulary.length !== 3500) {
+  throw new Error(`Wordverse vocabulary failed to load: ${vocabulary.length} / 3500`);
+}
+
+const savedLearned = (() => {
+  try {
+    return JSON.parse(localStorage.getItem("wordverseLearned") || "[]");
+  } catch {
+    return [];
+  }
+})();
 
 const state = {
   width: innerWidth,
@@ -117,7 +31,8 @@ const state = {
   focusTarget: 0,
   savedView: null,
   cardTimer: null,
-  learned: new Set(JSON.parse(localStorage.getItem("wordverseLearned") || "[]")),
+  learned: new Set(savedLearned),
+  learnedWords: new Set(savedLearned.map((key) => key.replace(/^(?:word:|\d+:)/, ""))),
 };
 
 let stars = [];
@@ -168,23 +83,9 @@ function planetSignature(planet) {
   ].join(":");
 }
 
-function ambientWordData(word) {
-  return [
-    word,
-    "/ vocabulary /",
-    "word",
-    "英语 3500 词汇星球",
-    `Explore the word "${word}" in the vocabulary universe.`,
-    `在词汇宇宙中探索单词 ${word}。`,
-  ];
-}
-
 function buildGalaxy() {
-  const count = state.width < 700 ? 650 : 1100;
+  const count = vocabulary.length;
   const usedPlanetSignatures = new Set();
-  const wordSlots = new Map(
-    vocabulary.map((_, index) => [Math.floor(((index + 0.5) * count) / vocabulary.length), index])
-  );
 
   stars = Array.from({ length: count }, (_, index) => {
     const a = random(index + 10);
@@ -195,11 +96,8 @@ function buildGalaxy() {
     const radius = 110 + Math.pow(a, 0.68) * 960;
     const angle = b * Math.PI * 2 + radius * 0.0068 + arm * (Math.PI * 2 / 7);
     const thickness = (c - 0.5) * (260 + radius * 0.32);
-    const wordIndex = wordSlots.get(index);
-    const label = wordIndex === undefined
-      ? ambientWords[index % ambientWords.length]
-      : vocabulary[wordIndex][0];
-    const wordData = wordIndex === undefined ? ambientWordData(label) : vocabulary[wordIndex];
+    const wordData = vocabulary[index];
+    const label = wordData[0];
     let planet = randomPlanet();
     let signature = planetSignature(planet);
     while (usedPlanetSignatures.has(signature)) {
@@ -211,7 +109,7 @@ function buildGalaxy() {
 
     return {
       id: index,
-      key: `${index}:${label}`,
+      key: `word:${label}`,
       x: Math.cos(angle) * radius + (d - 0.5) * 190,
       y: thickness + Math.sin(angle * 1.7) * 80,
       z: Math.sin(angle) * radius + (c - 0.5) * 190,
@@ -221,9 +119,9 @@ function buildGalaxy() {
       label,
       wordData,
       planet,
-      learned: state.learned.has(`${index}:${label}`),
-      labelVisible: index % 4 === 0 || wordIndex !== undefined,
-      hasFullDetail: wordIndex !== undefined,
+      learned: state.learnedWords.has(label),
+      labelVisible: index % 12 === 0,
+      hasFullDetail: true,
       pulse: a * Math.PI * 2,
       sx: 0,
       sy: 0,
@@ -264,7 +162,7 @@ function buildGalaxy() {
 function updateLearnedStatus() {
   const count = stars.filter((star) => star.learned).length;
   const status = document.querySelector("#learnedStatus");
-  if (status) status.textContent = `${count} / ${stars.length || 1100} LIT`;
+  if (status) status.textContent = `${count} / ${stars.length || 3500} LIT`;
   canvas.dataset.learnedCount = String(count);
 }
 
@@ -697,10 +595,12 @@ function showWord(star) {
   document.querySelector("#viewStatus").textContent = "FOCUS LOCK";
   document.querySelector("#zoomStatus").textContent = `${Math.round(state.targetZoom * 100)}%`;
 
-  const [word, phonetic, type, meaning, example, translation] = star.wordData;
+  const [word, phonetic, type, meaning] = star.wordData;
+  const example = `Learn the word "${word}" and use it in a sentence.`;
+  const translation = `学习单词 ${word}，并尝试用它造句。`;
   document.querySelector("#starCode").textContent = `STAR ${String(star.id + 701).padStart(4, "0")}`;
   document.querySelector("#wordTitle").textContent = word;
-  document.querySelector("#wordPhonetic").textContent = phonetic;
+  document.querySelector("#wordPhonetic").textContent = phonetic ? `/${phonetic}/` : "/ pronunciation /";
   document.querySelector("#wordType").textContent = type;
   document.querySelector("#wordMeaning").textContent = meaning;
   document.querySelector("#wordExample").textContent = example;
@@ -742,6 +642,7 @@ function lightActivePlanet() {
   if (!star || star.learned) return;
   star.learned = true;
   state.learned.add(star.key);
+  state.learnedWords.add(star.label);
   localStorage.setItem("wordverseLearned", JSON.stringify([...state.learned]));
   updateLearnedStatus();
 
