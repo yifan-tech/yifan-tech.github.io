@@ -4,14 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#000000" />
-    <meta name="description" content="可旋转探索的 3D 英语 3500 词宇宙。" />
+    <meta name="description" content="可自由飞行探索的 3D 英语 3500 词宇宙。" />
     <title>3D 单词宇宙 · 英语 3500 词</title>
     <link rel="stylesheet" href="wordverse.css?v=20260609-1" />
     <script defer src="vocabulary.js?v=20260609-1"></script>
-    <script defer src="wordverse.js?v=20260609-3"></script>
+    <script defer src="wordverse.js?v=20260609-4"></script>
   </head>
   <body>
-    <canvas id="universe" aria-label="可拖动旋转的 3D 英语单词宇宙"></canvas>
+    <canvas id="universe" aria-label="可自由飞行探索的 3D 英语单词宇宙"></canvas>
     <div class="space-vignette" aria-hidden="true"></div>
 
     <header class="hud">
@@ -21,9 +21,9 @@
         <small>3500 CORE WORDS</small>
       </div>
       <div class="hud-status">
-        <span id="viewStatus">FREE VIEW</span>
+        <span id="viewStatus">FREE FLIGHT</span>
         <i></i>
-        <span id="zoomStatus">100%</span>
+        <span id="zoomStatus">NAV READY</span>
         <i></i>
         <span id="galaxyStatus">0 GALAXIES</span>
         <i></i>
@@ -33,13 +33,13 @@
 
     <div class="drag-guide" id="dragGuide">
       <span class="drag-arrows">←</span>
-      <p>按住拖动，旋转整个宇宙</p>
+      <p>拖动环顾 · 滚轮/双击穿行 · WASD 自由移动</p>
       <span class="drag-arrows">→</span>
     </div>
 
     <div class="corner-note">
       <span>VOLUMETRIC CLOUD FIELD · 380 ROOT FAMILIES</span>
-      <span>DRAG THROUGH ENDLESS NEBULAE · WHEEL TO ZOOM</span>
+      <span>LOOK AROUND · WHEEL/DOUBLE TAP TO FLY · WASD TO ROAM</span>
     </div>
 
     <aside class="word-card" id="wordCard" aria-hidden="true">

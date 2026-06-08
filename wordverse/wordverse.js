@@ -19,11 +19,17 @@ const state = {
   width: innerWidth,
   height: innerHeight,
   dpr: Math.min(devicePixelRatio || 1, 1.7),
-  rotation: { x: -0.38, y: -0.12 },
-  targetRotation: { x: -0.38, y: -0.12 },
-  velocity: { x: 0, y: 0 },
-  zoom: 1,
-  targetZoom: 1,
+  camera: {
+    position: { x: 0, y: 0, z: 0 },
+    targetPosition: { x: 0, y: 0, z: 0 },
+    pitch: 0.04,
+    yaw: 0.28,
+    targetPitch: 0.04,
+    targetYaw: 0.28,
+    angularVelocity: { pitch: 0, yaw: 0 },
+  },
+  keys: new Set(),
+  lastFrameTime: 0,
   drag: { active: false, moved: false, x: 0, y: 0, lastX: 0, lastY: 0, pressedStar: null },
   hover: null,
   active: null,
@@ -345,21 +351,64 @@ function resize() {
   buildGalaxy();
 }
 
-function rotate(point) {
-  const cy = Math.cos(state.rotation.y);
-  const sy = Math.sin(state.rotation.y);
-  const cx = Math.cos(state.rotation.x);
-  const sx = Math.sin(state.rotation.x);
-  const x = point.x * cy + point.z * sy;
-  const z = -point.x * sy + point.z * cy;
-  return { x, y: point.y * cx - z * sx, z: point.y * sx + z * cx };
+function cameraAxes(useTarget = false) {
+  const yaw = useTarget ? state.camera.targetYaw : state.camera.yaw;
+  const pitch = useTarget ? state.camera.targetPitch : state.camera.pitch;
+  const cosPitch = Math.cos(pitch);
+  return {
+    forward: {
+      x: -Math.sin(yaw) * cosPitch,
+      y: Math.sin(pitch),
+      z: -Math.cos(yaw) * cosPitch,
+    },
+    right: {
+      x: Math.cos(yaw),
+      y: 0,
+      z: -Math.sin(yaw),
+    },
+    up: {
+      x: Math.sin(yaw) * Math.sin(pitch),
+      y: Math.cos(pitch),
+      z: Math.cos(yaw) * Math.sin(pitch),
+    },
+  };
+}
+
+function constrainCameraTarget() {
+  state.camera.targetPosition.x = Math.max(-3150, Math.min(3150, state.camera.targetPosition.x));
+  state.camera.targetPosition.y = Math.max(-2150, Math.min(2150, state.camera.targetPosition.y));
+  state.camera.targetPosition.z = Math.max(-3150, Math.min(3150, state.camera.targetPosition.z));
+}
+
+function moveCameraAlongView(distance) {
+  const { forward } = cameraAxes(true);
+  state.camera.targetPosition.x += forward.x * distance;
+  state.camera.targetPosition.y += forward.y * distance;
+  state.camera.targetPosition.z += forward.z * distance;
+  constrainCameraTarget();
+}
+
+function toCameraSpace(point) {
+  const dx = point.x - state.camera.position.x;
+  const dy = point.y - state.camera.position.y;
+  const dz = point.z - state.camera.position.z;
+  const cy = Math.cos(state.camera.yaw);
+  const sy = Math.sin(state.camera.yaw);
+  const cx = Math.cos(state.camera.pitch);
+  const sx = Math.sin(state.camera.pitch);
+  const x = dx * cy - dz * sy;
+  const yawedZ = dx * sy + dz * cy;
+  return {
+    x,
+    y: dy * cx + yawedZ * sx,
+    z: -dy * sx + yawedZ * cx,
+  };
 }
 
 function project(point) {
-  const camera = 4100;
-  const depth = camera - point.z;
-  if (depth < 260) return null;
-  const scale = (1320 * state.zoom) / depth;
+  const depth = -point.z;
+  if (depth < 70) return null;
+  const scale = 1320 / depth;
   return {
     x: state.width * 0.5 + point.x * scale,
     y: state.height * 0.5 + point.y * scale,
@@ -412,7 +461,7 @@ function drawBackground() {
 
 function drawDeepSpaceDust() {
   deepSpaceDust.forEach((dust) => {
-    const rotated = rotate(dust);
+    const rotated = toCameraSpace(dust);
     const projected = project(rotated);
     if (!projected) return;
     if (
@@ -433,7 +482,7 @@ function drawDeepSpaceDust() {
 function drawNebulaClouds() {
   const visibleClouds = nebulaClouds
     .map((cloud) => {
-      const rotated = rotate(cloud);
+      const rotated = toCameraSpace(cloud);
       const projected = project(rotated);
       return projected ? { cloud, rotated, projected } : null;
     })
@@ -467,7 +516,7 @@ function drawNebulaClouds() {
 function drawGalaxies() {
   galaxies.forEach((galaxy) => {
     if (galaxy.members.length < 2) return;
-    const rotated = rotate(galaxy);
+    const rotated = toCameraSpace(galaxy);
     const projected = project(rotated);
     if (!projected) {
       galaxy.visible = false;
@@ -481,7 +530,7 @@ function drawGalaxies() {
     galaxy.rotatedZ = rotated.z;
 
     const radius = Math.max(7, galaxy.radius * projected.scale);
-    const depthAlpha = Math.max(0.04, Math.min(0.2, (rotated.z + 1100) / 9000));
+    const depthAlpha = Math.max(0.04, Math.min(0.2, 0.24 - projected.depth / 34000));
     const isActive = state.active?.galaxy === galaxy;
     const alpha = isActive ? 0.48 : depthAlpha * (1 - state.focusAmount * 0.7);
 
@@ -689,7 +738,7 @@ function drawDormantStar(star, radius, depthAlpha, focusFade) {
 }
 
 function drawStar(star, time) {
-  const depthAlpha = Math.max(0.12, Math.min(1, (star.rotatedZ + 1100) / 1700));
+  const depthAlpha = Math.max(0.12, Math.min(1, 1.18 - star.depth / 7200));
   const radius = Math.max(0.42, star.size * star.scale * 1.55);
   const pulse = 1 + Math.sin(time * 0.0015 + star.pulse) * 0.15;
   const focusFade = state.active && star !== state.active ? 1 - state.focusAmount * 0.78 : 1;
@@ -767,23 +816,51 @@ function drawFocusRings(time) {
 }
 
 function animate(time = 0) {
-  state.zoom += (state.targetZoom - state.zoom) * 0.08;
+  const frameScale = Math.min(2.4, Math.max(0.25, (time - state.lastFrameTime || 16.67) / 16.67));
+  state.lastFrameTime = time;
   state.focusAmount += (state.focusTarget - state.focusAmount) * 0.08;
   if (!state.drag.active) {
-    state.targetRotation.x += state.velocity.x;
-    state.targetRotation.y += state.velocity.y;
-    state.velocity.x *= 0.94;
-    state.velocity.y *= 0.94;
+    state.camera.targetPitch += state.camera.angularVelocity.pitch;
+    state.camera.targetYaw += state.camera.angularVelocity.yaw;
+    state.camera.angularVelocity.pitch *= 0.94;
+    state.camera.angularVelocity.yaw *= 0.94;
   }
-  state.rotation.x += (state.targetRotation.x - state.rotation.x) * 0.17;
-  state.rotation.y += (state.targetRotation.y - state.rotation.y) * 0.17;
+  const axes = cameraAxes(true);
+  const moveSpeed = (state.keys.has("ShiftLeft") || state.keys.has("ShiftRight") ? 30 : 11) * frameScale;
+  const movement = { x: 0, y: 0, z: 0 };
+  const moveAlong = (axis, amount) => {
+    movement.x += axis.x * amount;
+    movement.y += axis.y * amount;
+    movement.z += axis.z * amount;
+  };
+  if (!state.active) {
+    if (state.keys.has("KeyW")) moveAlong(axes.forward, moveSpeed);
+    if (state.keys.has("KeyS")) moveAlong(axes.forward, -moveSpeed);
+    if (state.keys.has("KeyA")) moveAlong(axes.right, -moveSpeed);
+    if (state.keys.has("KeyD")) moveAlong(axes.right, moveSpeed);
+    if (state.keys.has("KeyQ") || state.keys.has("Space")) moveAlong(axes.up, moveSpeed);
+    if (state.keys.has("KeyE") || state.keys.has("ControlLeft")) moveAlong(axes.up, -moveSpeed);
+  }
+  state.camera.targetPosition.x += movement.x;
+  state.camera.targetPosition.y += movement.y;
+  state.camera.targetPosition.z += movement.z;
+  constrainCameraTarget();
+  state.camera.pitch += (state.camera.targetPitch - state.camera.pitch) * 0.17;
+  state.camera.yaw += (state.camera.targetYaw - state.camera.yaw) * 0.17;
+  state.camera.position.x += (state.camera.targetPosition.x - state.camera.position.x) * 0.13;
+  state.camera.position.y += (state.camera.targetPosition.y - state.camera.position.y) * 0.13;
+  state.camera.position.z += (state.camera.targetPosition.z - state.camera.position.z) * 0.13;
+  canvas.dataset.cameraPosition =
+    `${state.camera.position.x.toFixed(1)},${state.camera.position.y.toFixed(1)},${state.camera.position.z.toFixed(1)}`;
+  canvas.dataset.cameraOrientation =
+    `${state.camera.pitch.toFixed(3)},${state.camera.yaw.toFixed(3)}`;
 
   drawBackground();
   drawNebulaClouds();
   drawDeepSpaceDust();
   drawGalaxies();
   stars.forEach((star) => {
-    const projected = project(rotate(star));
+    const projected = project(toCameraSpace(star));
     star.visible = Boolean(
       projected &&
       projected.x > -70 &&
@@ -800,12 +877,12 @@ function animate(time = 0) {
   });
 
   const visible = stars.filter((star) => star.visible).sort((a, b) => b.depth - a.depth);
-  const testStar = visible.find((star) => star.wordData && star.rotatedZ > -350);
+  const testStar = visible.find((star) => star.wordData && star.depth < 5200);
   if (testStar) canvas.dataset.testStar = `${testStar.sx.toFixed(1)},${testStar.sy.toFixed(1)}`;
   const otherStar = visible.find(
     (star) =>
       star !== state.active &&
-      star.rotatedZ > -250 &&
+      star.depth < 5600 &&
       star.sx > 45 &&
       star.sx < state.width - 390 &&
       star.sy > 70 &&
@@ -829,7 +906,7 @@ function findStar(x, y) {
   let found = null;
   let nearest = Infinity;
   stars.forEach((star) => {
-    if (!star.visible || star.rotatedZ < -500 || star === state.active) return;
+    if (!star.visible || star.depth > 6500 || star === state.active) return;
     const distance = Math.hypot(star.sx - x, star.sy - y);
     const hitRadius = Math.max(22, star.size * star.scale * 6.5);
     if (distance <= hitRadius && distance < nearest) {
@@ -845,28 +922,30 @@ function showWord(star) {
   clearTimeout(state.cardTimer);
   if (!state.active) {
     state.savedView = {
-      rotationX: state.targetRotation.x,
-      rotationY: state.targetRotation.y,
-      zoom: state.targetZoom,
+      position: { ...state.camera.targetPosition },
+      pitch: state.camera.targetPitch,
+      yaw: state.camera.targetYaw,
     };
   }
   state.active = star;
   state.focusTarget = 1;
-  state.velocity.x = 0;
-  state.velocity.y = 0;
+  state.camera.angularVelocity.pitch = 0;
+  state.camera.angularVelocity.yaw = 0;
 
   const nearestAngle = (angle, reference) => {
     const fullTurn = Math.PI * 2;
     return angle + Math.round((reference - angle) / fullTurn) * fullTurn;
   };
-  const focusY = nearestAngle(Math.atan2(-star.x, star.z), state.targetRotation.y);
-  const horizontalDepth = Math.hypot(star.x, star.z);
-  const focusX = nearestAngle(Math.atan2(star.y, horizontalDepth), state.targetRotation.x);
-  state.targetRotation.y = focusY;
-  state.targetRotation.x = focusX;
-  state.targetZoom = state.width < 700 ? 1.5 : 1.78;
+  const dx = star.x - state.camera.position.x;
+  const dy = star.y - state.camera.position.y;
+  const dz = star.z - state.camera.position.z;
+  const horizontalDepth = Math.hypot(dx, dz);
+  const focusYaw = nearestAngle(Math.atan2(-dx, -dz), state.camera.targetYaw);
+  const focusPitch = Math.atan2(dy, horizontalDepth);
+  state.camera.targetYaw = focusYaw;
+  state.camera.targetPitch = focusPitch;
   document.querySelector("#viewStatus").textContent = "FOCUS LOCK";
-  document.querySelector("#zoomStatus").textContent = `${Math.round(state.targetZoom * 100)}%`;
+  document.querySelector("#zoomStatus").textContent = "TARGET LOCK";
 
   const [word, phonetic, type, meaning] = star.wordData;
   const example = `Learn the word "${word}" and use it in a sentence.`;
@@ -895,20 +974,24 @@ function showWord(star) {
 }
 
 function closeWord() {
+  if (!state.active) return;
   clearTimeout(state.cardTimer);
   const card = document.querySelector("#wordCard");
   card.classList.remove("is-open");
   card.setAttribute("aria-hidden", "true");
   state.focusTarget = 0;
   if (state.savedView) {
-    state.targetRotation.x = state.savedView.rotationX;
-    state.targetRotation.y = state.savedView.rotationY;
-    state.targetZoom = state.savedView.zoom;
+    state.camera.targetPosition = { ...state.savedView.position };
+    state.camera.targetPitch = state.savedView.pitch;
+    state.camera.targetYaw = state.savedView.yaw;
   }
-  document.querySelector("#viewStatus").textContent = "FREE VIEW";
-  document.querySelector("#zoomStatus").textContent = `${Math.round(state.targetZoom * 100)}%`;
+  document.querySelector("#viewStatus").textContent = "FREE FLIGHT";
+  document.querySelector("#zoomStatus").textContent = "NAV READY";
   setTimeout(() => {
-    if (state.focusTarget === 0) state.active = null;
+    if (state.focusTarget === 0) {
+      state.active = null;
+      state.savedView = null;
+    }
   }, 420);
 }
 
@@ -937,11 +1020,11 @@ function setupEvents() {
     state.drag.pressedStar = findStar(event.clientX, event.clientY);
     state.drag.x = state.drag.lastX = event.clientX;
     state.drag.y = state.drag.lastY = event.clientY;
-    state.velocity.x = 0;
-    state.velocity.y = 0;
+    state.camera.angularVelocity.pitch = 0;
+    state.camera.angularVelocity.yaw = 0;
     canvas.setPointerCapture(event.pointerId);
     canvas.classList.add("is-dragging");
-    document.querySelector("#viewStatus").textContent = "ROTATING";
+    document.querySelector("#viewStatus").textContent = "LOOKING";
   });
 
   canvas.addEventListener("pointermove", (event) => {
@@ -954,13 +1037,17 @@ function setupEvents() {
     if (Math.hypot(event.clientX - state.drag.x, event.clientY - state.drag.y) > 5) {
       state.drag.moved = true;
     }
-    state.targetRotation.y += dx * 0.005;
-    state.targetRotation.x -= dy * 0.0045;
-    state.velocity.y = dx * 0.00038;
-    state.velocity.x = -dy * 0.00034;
+    state.camera.targetYaw -= dx * 0.0045;
+    state.camera.targetPitch = Math.max(
+      -Math.PI * 0.48,
+      Math.min(Math.PI * 0.48, state.camera.targetPitch + dy * 0.004)
+    );
+    state.camera.angularVelocity.yaw = -dx * 0.00032;
+    state.camera.angularVelocity.pitch = dy * 0.00028;
     state.drag.lastX = event.clientX;
     state.drag.lastY = event.clientY;
-    canvas.dataset.rotation = `${state.targetRotation.x.toFixed(3)},${state.targetRotation.y.toFixed(3)}`;
+    canvas.dataset.cameraOrientation =
+      `${state.camera.targetPitch.toFixed(3)},${state.camera.targetYaw.toFixed(3)}`;
   });
 
   canvas.addEventListener("pointerup", (event) => {
@@ -974,7 +1061,7 @@ function setupEvents() {
     if (selectedStar) {
       showWord(selectedStar);
     } else {
-      document.querySelector("#viewStatus").textContent = state.active ? "FOCUS LOCK" : "FREE VIEW";
+      document.querySelector("#viewStatus").textContent = state.active ? "FOCUS LOCK" : "FREE FLIGHT";
     }
   });
 
@@ -982,14 +1069,24 @@ function setupEvents() {
     state.drag.active = false;
     state.drag.pressedStar = null;
     canvas.classList.remove("is-dragging");
-    document.querySelector("#viewStatus").textContent = "FREE VIEW";
+    document.querySelector("#viewStatus").textContent = "FREE FLIGHT";
   });
 
   canvas.addEventListener("wheel", (event) => {
-    state.targetZoom = Math.max(0.55, Math.min(2.15, state.targetZoom - event.deltaY * 0.00075));
-    document.querySelector("#zoomStatus").textContent = `${Math.round(state.targetZoom * 100)}%`;
+    event.preventDefault();
+    if (state.active) return;
+    const distance = Math.max(-520, Math.min(520, -event.deltaY * 1.35));
+    moveCameraAlongView(distance);
+    document.querySelector("#zoomStatus").textContent = distance >= 0 ? "FLY FORWARD" : "FLY BACK";
     document.querySelector("#dragGuide").style.opacity = "0";
-  }, { passive: true });
+  }, { passive: false });
+
+  canvas.addEventListener("dblclick", (event) => {
+    if (state.active || findStar(event.clientX, event.clientY)) return;
+    moveCameraAlongView(480);
+    document.querySelector("#zoomStatus").textContent = "FLY FORWARD";
+    document.querySelector("#dragGuide").style.opacity = "0";
+  });
 
   document.querySelector("#cardClose").addEventListener("click", closeWord);
   document.querySelector("#learnButton").addEventListener("click", lightActivePlanet);
@@ -1003,8 +1100,18 @@ function setupEvents() {
   });
 
   addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeWord();
+    if (event.key === "Escape") {
+      closeWord();
+      return;
+    }
+    if (["KeyW", "KeyA", "KeyS", "KeyD", "KeyQ", "KeyE", "Space", "ControlLeft", "ShiftLeft", "ShiftRight"].includes(event.code)) {
+      event.preventDefault();
+      state.keys.add(event.code);
+      if (!state.active) document.querySelector("#viewStatus").textContent = "FREE FLIGHT";
+    }
   });
+  addEventListener("keyup", (event) => state.keys.delete(event.code));
+  addEventListener("blur", () => state.keys.clear());
 }
 
 resize();
