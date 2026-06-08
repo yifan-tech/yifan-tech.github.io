@@ -19,8 +19,8 @@ const state = {
   width: innerWidth,
   height: innerHeight,
   dpr: Math.min(devicePixelRatio || 1, 1.7),
-  rotation: { x: -0.14, y: 0.15 },
-  targetRotation: { x: -0.14, y: 0.15 },
+  rotation: { x: -0.38, y: -0.12 },
+  targetRotation: { x: -0.38, y: -0.12 },
   velocity: { x: 0, y: 0 },
   zoom: 1,
   targetZoom: 1,
@@ -39,6 +39,7 @@ let stars = [];
 let links = [];
 let backgroundStars = [];
 let galaxies = [];
+let deepSpaceDust = [];
 
 function random(seed) {
   const value = Math.sin(seed * 923.17) * 43758.5453;
@@ -97,21 +98,26 @@ function buildGalaxy() {
 
   const goldenAngle = Math.PI * (3 - Math.sqrt(5));
   galaxies = [...galaxyMap.entries()].map(([root, members], index, all) => {
-    const vertical = all.length === 1 ? 0 : 1 - (index / (all.length - 1)) * 2;
-    const shell = 520 + random(index + 22000) * 470;
-    const horizontal = Math.sqrt(Math.max(0, 1 - vertical * vertical));
-    const angle = index * goldenAngle + random(index + 23000) * 0.35;
+    const progress = (index + 0.5) / all.length;
+    const arm = index % 6;
+    const radius = 180 + Math.pow(progress, 0.62) * 2500;
+    const armAngle = arm * (Math.PI * 2 / 6);
+    const angle = armAngle + radius * 0.0046 + (random(index + 23000) - 0.5) * 0.72;
+    const radialScatter = (random(index + 24000) - 0.5) * (100 + radius * 0.13);
+    const actualRadius = radius + radialScatter;
+    const diskThickness = 45 + radius * 0.085;
+    const isHaloGalaxy = index % 31 === 0;
     const familyRadius = members.length > 1 ? 34 + Math.sqrt(members.length) * 19 : 0;
 
     return {
       id: index,
       root,
       members,
-      x: Math.cos(angle) * horizontal * shell,
-      y: vertical * 720 + (random(index + 24000) - 0.5) * 90,
-      z: Math.sin(angle) * horizontal * shell,
+      x: Math.cos(angle) * actualRadius,
+      y: (random(index + 25000) - 0.5) * diskThickness * (isHaloGalaxy ? 5.2 : 1),
+      z: Math.sin(angle) * actualRadius,
       radius: familyRadius,
-      hue: Math.floor(random(index + 25000) * 360),
+      hue: Math.floor(random(index + 26000) * 360),
       visible: false,
       sx: 0,
       sy: 0,
@@ -188,12 +194,28 @@ function buildGalaxy() {
     });
   });
 
-  backgroundStars = Array.from({ length: state.width < 700 ? 180 : 360 }, (_, index) => ({
+  backgroundStars = Array.from({ length: state.width < 700 ? 160 : 300 }, (_, index) => ({
     x: random(index + 12000) * state.width,
     y: random(index + 14000) * state.height,
     size: 0.3 + random(index + 16000) * 1.25,
     alpha: 0.12 + random(index + 18000) * 0.62,
   }));
+  deepSpaceDust = Array.from({ length: state.width < 700 ? 360 : 760 }, (_, index) => {
+    const radius = 300 + Math.pow(random(index + 30000), 0.58) * 3300;
+    const arm = index % 6;
+    const angle =
+      arm * (Math.PI * 2 / 6) +
+      radius * 0.0046 +
+      (random(index + 31000) - 0.5) * 1.15;
+    return {
+      x: Math.cos(angle) * radius,
+      y: (random(index + 32000) - 0.5) * (80 + radius * 0.12),
+      z: Math.sin(angle) * radius,
+      size: 0.35 + random(index + 33000) * 1.4,
+      alpha: 0.06 + random(index + 34000) * 0.28,
+      hue: 185 + Math.floor(random(index + 35000) * 58),
+    };
+  });
   canvas.dataset.planetCount = String(stars.length);
   canvas.dataset.uniquePlanetCount = String(usedPlanetSignatures.size);
   canvas.dataset.galaxyCount = String(galaxies.length);
@@ -238,10 +260,10 @@ function rotate(point) {
 }
 
 function project(point) {
-  const camera = 1450;
+  const camera = 4100;
   const depth = camera - point.z;
-  if (depth < 170) return null;
-  const scale = (900 * state.zoom) / depth;
+  if (depth < 260) return null;
+  const scale = (1320 * state.zoom) / depth;
   return {
     x: state.width * 0.5 + point.x * scale,
     y: state.height * 0.5 + point.y * scale,
@@ -280,6 +302,34 @@ function drawBackground() {
     ctx.fillStyle = `rgba(224, 238, 246, ${star.alpha})`;
     ctx.beginPath();
     ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  const haze = ctx.createLinearGradient(0, state.height * 0.18, state.width, state.height * 0.82);
+  haze.addColorStop(0, "rgba(14, 34, 52, 0)");
+  haze.addColorStop(0.42, "rgba(29, 67, 88, 0.035)");
+  haze.addColorStop(0.58, "rgba(69, 48, 91, 0.028)");
+  haze.addColorStop(1, "rgba(5, 12, 24, 0)");
+  ctx.fillStyle = haze;
+  ctx.fillRect(0, 0, state.width, state.height);
+}
+
+function drawDeepSpaceDust() {
+  deepSpaceDust.forEach((dust) => {
+    const rotated = rotate(dust);
+    const projected = project(rotated);
+    if (!projected) return;
+    if (
+      projected.x < -10 ||
+      projected.x > state.width + 10 ||
+      projected.y < -10 ||
+      projected.y > state.height + 10
+    ) return;
+
+    const depth = Math.max(0.14, Math.min(1, projected.scale * 2.4));
+    ctx.fillStyle = `hsla(${dust.hue}, 72%, 76%, ${dust.alpha * depth})`;
+    ctx.beginPath();
+    ctx.arc(projected.x, projected.y, Math.max(0.22, dust.size * projected.scale), 0, Math.PI * 2);
     ctx.fill();
   });
 }
@@ -599,6 +649,7 @@ function animate(time = 0) {
   state.rotation.y += (state.targetRotation.y - state.rotation.y) * 0.17;
 
   drawBackground();
+  drawDeepSpaceDust();
   drawGalaxies();
   stars.forEach((star) => {
     const projected = project(rotate(star));
