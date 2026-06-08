@@ -211,13 +211,18 @@ button { color: inherit; font: inherit; }
   cursor: pointer;
 }
 
-.word-meta { display: flex; gap: 6px; margin-top: 22px; }
+.word-meta { display: flex; align-items: flex-start; gap: 6px; margin-top: 22px; }
 
 .word-meta span {
   padding: 4px 7px;
   border: 1px solid var(--line);
   color: #879198;
   font: 400 8px var(--mono);
+}
+
+#wordRoot {
+  max-width: 235px;
+  overflow-wrap: anywhere;
 }
 
 .word-meaning {

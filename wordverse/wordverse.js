@@ -38,6 +38,7 @@ const state = {
 let stars = [];
 let links = [];
 let backgroundStars = [];
+let galaxies = [];
 
 function random(seed) {
   const value = Math.sin(seed * 923.17) * 43758.5453;
@@ -86,18 +87,61 @@ function planetSignature(planet) {
 function buildGalaxy() {
   const count = vocabulary.length;
   const usedPlanetSignatures = new Set();
+  const galaxyMap = new Map();
+
+  vocabulary.forEach((wordData, index) => {
+    const root = wordData[4] || wordData[0];
+    if (!galaxyMap.has(root)) galaxyMap.set(root, []);
+    galaxyMap.get(root).push(index);
+  });
+
+  const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+  galaxies = [...galaxyMap.entries()].map(([root, members], index, all) => {
+    const vertical = all.length === 1 ? 0 : 1 - (index / (all.length - 1)) * 2;
+    const shell = 520 + random(index + 22000) * 470;
+    const horizontal = Math.sqrt(Math.max(0, 1 - vertical * vertical));
+    const angle = index * goldenAngle + random(index + 23000) * 0.35;
+    const familyRadius = members.length > 1 ? 34 + Math.sqrt(members.length) * 19 : 0;
+
+    return {
+      id: index,
+      root,
+      members,
+      x: Math.cos(angle) * horizontal * shell,
+      y: vertical * 720 + (random(index + 24000) - 0.5) * 90,
+      z: Math.sin(angle) * horizontal * shell,
+      radius: familyRadius,
+      hue: Math.floor(random(index + 25000) * 360),
+      visible: false,
+      sx: 0,
+      sy: 0,
+      scale: 0,
+      rotatedZ: 0,
+    };
+  });
+
+  const galaxyByWord = new Map();
+  galaxies.forEach((galaxy) => {
+    galaxy.members.forEach((wordIndex, memberIndex) => {
+      galaxyByWord.set(wordIndex, { galaxy, memberIndex });
+    });
+  });
 
   stars = Array.from({ length: count }, (_, index) => {
     const a = random(index + 10);
     const b = random(index + 2000);
     const c = random(index + 4000);
     const d = random(index + 6000);
-    const arm = index % 7;
-    const radius = 110 + Math.pow(a, 0.68) * 960;
-    const angle = b * Math.PI * 2 + radius * 0.0068 + arm * (Math.PI * 2 / 7);
-    const thickness = (c - 0.5) * (260 + radius * 0.32);
     const wordData = vocabulary[index];
     const label = wordData[0];
+    const root = wordData[4] || label;
+    const { galaxy, memberIndex } = galaxyByWord.get(index);
+    const memberCount = galaxy.members.length;
+    const localAngle = memberIndex * goldenAngle + b * 0.55;
+    const localRadius = memberCount > 1
+      ? 16 + Math.sqrt((memberIndex + 0.7) / memberCount) * galaxy.radius
+      : 0;
+    const localDepth = memberCount > 1 ? (c - 0.5) * galaxy.radius * 0.9 : 0;
     let planet = randomPlanet();
     let signature = planetSignature(planet);
     while (usedPlanetSignatures.has(signature)) {
@@ -106,17 +150,20 @@ function buildGalaxy() {
     }
     usedPlanetSignatures.add(signature);
     planet.signature = signature;
+    planet.hue = (galaxy.hue + Math.floor(d * 92) - 46 + 360) % 360;
 
     return {
       id: index,
       key: `word:${label}`,
-      x: Math.cos(angle) * radius + (d - 0.5) * 190,
-      y: thickness + Math.sin(angle * 1.7) * 80,
-      z: Math.sin(angle) * radius + (c - 0.5) * 190,
+      x: galaxy.x + Math.cos(localAngle) * localRadius,
+      y: galaxy.y + Math.sin(localAngle) * localRadius * 0.72,
+      z: galaxy.z + localDepth,
       size: 1.25 + d * 3.4,
       color: "planet",
       glow: true,
       label,
+      root,
+      galaxy,
       wordData,
       planet,
       learned: state.learnedWords.has(label),
@@ -131,22 +178,15 @@ function buildGalaxy() {
   });
 
   links = [];
-  for (let i = 0; i < stars.length; i += 1) {
-    if (i % 3) continue;
-    let closest = -1;
-    let distance = 280;
-    for (let j = i + 1; j < Math.min(stars.length, i + 28); j += 1) {
-      const dx = stars[i].x - stars[j].x;
-      const dy = stars[i].y - stars[j].y;
-      const dz = stars[i].z - stars[j].z;
-      const current = Math.hypot(dx, dy, dz);
-      if (current < distance) {
-        distance = current;
-        closest = j;
+  galaxies.forEach((galaxy) => {
+    if (galaxy.members.length < 2) return;
+    galaxy.members.forEach((wordIndex, memberIndex) => {
+      if (memberIndex > 0) links.push([wordIndex, galaxy.members[memberIndex - 1]]);
+      if (memberIndex > 2 && memberIndex % 3 === 0) {
+        links.push([wordIndex, galaxy.members[0]]);
       }
-    }
-    if (closest >= 0) links.push([i, closest]);
-  }
+    });
+  });
 
   backgroundStars = Array.from({ length: state.width < 700 ? 180 : 360 }, (_, index) => ({
     x: random(index + 12000) * state.width,
@@ -156,6 +196,15 @@ function buildGalaxy() {
   }));
   canvas.dataset.planetCount = String(stars.length);
   canvas.dataset.uniquePlanetCount = String(usedPlanetSignatures.size);
+  canvas.dataset.galaxyCount = String(galaxies.length);
+  canvas.dataset.familyGalaxyCount = String(galaxies.filter((galaxy) => galaxy.members.length > 1).length);
+  const largestGalaxy = galaxies.reduce(
+    (largest, galaxy) => galaxy.members.length > largest.members.length ? galaxy : largest,
+    galaxies[0]
+  );
+  canvas.dataset.largestGalaxy = `${largestGalaxy.root}:${largestGalaxy.members.length}`;
+  document.querySelector("#galaxyStatus").textContent =
+    `${galaxies.filter((galaxy) => galaxy.members.length > 1).length} FAMILIES`;
   updateLearnedStatus();
 }
 
@@ -232,6 +281,47 @@ function drawBackground() {
     ctx.beginPath();
     ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
     ctx.fill();
+  });
+}
+
+function drawGalaxies() {
+  galaxies.forEach((galaxy) => {
+    if (galaxy.members.length < 2) return;
+    const rotated = rotate(galaxy);
+    const projected = project(rotated);
+    if (!projected) {
+      galaxy.visible = false;
+      return;
+    }
+
+    galaxy.visible = true;
+    galaxy.sx = projected.x;
+    galaxy.sy = projected.y;
+    galaxy.scale = projected.scale;
+    galaxy.rotatedZ = rotated.z;
+
+    const radius = Math.max(7, galaxy.radius * projected.scale);
+    const depthAlpha = Math.max(0.04, Math.min(0.2, (rotated.z + 1100) / 9000));
+    const isActive = state.active?.galaxy === galaxy;
+    const alpha = isActive ? 0.48 : depthAlpha * (1 - state.focusAmount * 0.7);
+
+    ctx.strokeStyle = `hsla(${galaxy.hue}, 72%, 67%, ${alpha})`;
+    ctx.lineWidth = isActive ? 1.1 : 0.42;
+    ctx.beginPath();
+    ctx.ellipse(projected.x, projected.y, radius, radius * 0.72, 0, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.fillStyle = `hsla(${galaxy.hue}, 84%, 72%, ${alpha * 0.72})`;
+    ctx.beginPath();
+    ctx.arc(projected.x, projected.y, isActive ? 2.2 : 0.75, 0, Math.PI * 2);
+    ctx.fill();
+
+    if ((isActive || galaxy.members.length >= 7) && projected.scale > 0.38) {
+      ctx.font = `${isActive ? 500 : 300} ${isActive ? 10 : 7}px "DM Mono", monospace`;
+      ctx.textAlign = "center";
+      ctx.fillStyle = `hsla(${galaxy.hue}, 76%, 78%, ${isActive ? 0.88 : 0.34})`;
+      ctx.fillText(`ROOT · ${galaxy.root}`, projected.x, projected.y - radius - 7);
+    }
   });
 }
 
@@ -509,6 +599,7 @@ function animate(time = 0) {
   state.rotation.y += (state.targetRotation.y - state.rotation.y) * 0.17;
 
   drawBackground();
+  drawGalaxies();
   stars.forEach((star) => {
     const projected = project(rotate(star));
     star.visible = Boolean(
@@ -602,9 +693,11 @@ function showWord(star) {
   document.querySelector("#wordTitle").textContent = word;
   document.querySelector("#wordPhonetic").textContent = phonetic ? `/${phonetic}/` : "/ pronunciation /";
   document.querySelector("#wordType").textContent = type;
+  document.querySelector("#wordRoot").textContent = `ROOT · ${star.root}`;
   document.querySelector("#wordMeaning").textContent = meaning;
   document.querySelector("#wordExample").textContent = example;
   document.querySelector("#wordTranslation").textContent = translation;
+  canvas.dataset.activeRoot = star.root;
   const learnButton = document.querySelector("#learnButton");
   const learnButtonText = document.querySelector("#learnButtonText");
   learnButton.classList.toggle("is-learned", star.learned);

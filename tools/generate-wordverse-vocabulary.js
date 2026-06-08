@@ -1,11 +1,16 @@
 const fs = require("fs");
 const path = require("path");
+const { assignWordRoots } = require("./word-root-utils");
 
 const sourcePath = process.argv[2];
+const wordrootPath = process.argv[3];
+const lemmaPath = process.argv[4];
 const outputPath = path.resolve(__dirname, "../wordverse/vocabulary.js");
 
 if (!sourcePath) {
-  throw new Error("Usage: node tools/generate-wordverse-vocabulary.js <ecdict.csv>");
+  throw new Error(
+    "Usage: node tools/generate-wordverse-vocabulary.js <ecdict.csv> [wordroot.txt] [lemma.en.txt]"
+  );
 }
 
 function parseCsv(text) {
@@ -126,6 +131,9 @@ for (const row of candidates) {
 if (selected.length !== 3500) {
   throw new Error(`Expected 3500 words, generated ${selected.length}`);
 }
+
+const roots = assignWordRoots(selected.map((item) => item[0]), { wordrootPath, lemmaPath });
+selected.forEach((item, index) => item.push(roots[index]));
 
 const output = `/* Generated from ECDICT (MIT): https://github.com/skywind3000/ECDICT */\nwindow.WORDVERSE_VOCABULARY = ${JSON.stringify(selected, null, 0)};\n`;
 fs.writeFileSync(outputPath, output, "utf8");
