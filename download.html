@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>资源下载 - 何一帆的博客</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #00d4ff, #7c3aed, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #8892b0;
+            font-size: 1.1em;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: #00d4ff;
+            text-decoration: none;
+            font-size: 0.95em;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #7c3aed;
+        }
+
+        .resource-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .resource-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .resource-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.1);
+        }
+
+        .resource-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .resource-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #00d4ff, #7c3aed);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            flex-shrink: 0;
+        }
+
+        .resource-details {
+            flex: 1;
+        }
+
+        .resource-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .resource-desc {
+            color: #8892b0;
+            font-size: 0.9em;
+            margin-bottom: 4px;
+        }
+
+        .resource-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.8em;
+            color: #6b7280;
+        }
+
+        .resource-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #00d4ff, #7c3aed);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .download-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 16px rgba(0, 212, 255, 0.3);
+        }
+
+        .category-title {
+            font-size: 1.3em;
+            color: #00d4ff;
+            margin: 30px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state .icon {
+            font-size: 3em;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 640px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .resource-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .resource-meta {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← 返回首页</a>
+
+        <div class="header">
+            <h1>📦 资源下载</h1>
+            <p>分享的文件与资源</p>
+        </div>
+
+        <div class="resource-grid">
+            <!-- 示例资源 - 按需修改 -->
+            <div class="category-title">📁 工具类</div>
+
+            <div class="resource-card">
+                <div class="resource-info">
+                    <div class="resource-icon">🔧</div>
+                    <div class="resource-details">
+                        <div class="resource-name">示例文件</div>
+                        <div class="resource-desc">这是一个示例下载项，请修改为你实际的资源</div>
+                        <div class="resource-meta">
+                            <span>📄 ZIP</span>
+                            <span>💾 1.2 MB</span>
+                            <span>📅 2026-06-16</span>
+                        </div>
+                    </div>
+                    <a href="downloads/example.zip" class="download-btn" download>下载</a>
+                </div>
+            </div>
+
+            <div class="category-title">📚 文档类</div>
+
+            <div class="resource-card">
+                <div class="resource-info">
+                    <div class="resource-icon">📄</div>
+                    <div class="resource-details">
+                        <div class="resource-name">示例文档</div>
+                        <div class="resource-desc">这是一个示例文档，请替换为实际内容</div>
+                        <div class="resource-meta">
+                            <span>📄 PDF</span>
+                            <span>💾 2.5 MB</span>
+                            <span>📅 2026-06-16</span>
+                        </div>
+                    </div>
+                    <a href="downloads/example.pdf" class="download-btn" download>下载</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
